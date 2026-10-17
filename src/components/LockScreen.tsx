@@ -89,7 +89,7 @@ export const LockScreen: React.FC<LockScreenProps> = ({ onUnlock }) => {
               “SORRY WE’RE CLOSED RIGHT NOW”
             </p>
             <p className="text-[11px] font-bold text-gray-700 mt-1">
-              Finishing up payout & deposit setup. Entering passcode 2330 unlocks the vault.
+              We're currently preparing the next drop & finalizing checkout. Check back shortly or follow @seandidmywrist on Instagram!
             </p>
 
             {/* Comic Speech Bubble Triangle Tail pointing down to Ghost */}

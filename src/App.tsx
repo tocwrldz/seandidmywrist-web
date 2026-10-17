@@ -336,7 +336,7 @@ export default function App() {
                 setIsSiteLocked(true);
               }}
               className="flex items-center gap-1.5 bg-red-100 hover:bg-red-200 text-red-900 border-2 border-black px-2.5 py-1.5 text-xs font-black transition-colors cursor-pointer shadow-[2px_2px_0px_#000]"
-              title="Lock website with passcode 2330"
+              title="Lock website (Admin)"
             >
               <Lock size={13} className="text-red-700" />
               <span className="hidden sm:inline">LOCK SITE</span>
