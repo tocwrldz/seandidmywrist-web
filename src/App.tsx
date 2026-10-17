@@ -13,11 +13,12 @@ import { LoyaltyPunchCard } from './components/LoyaltyPunchCard';
 import { GhostPunchCardModal } from './components/GhostPunchCardModal';
 import { AuthModal } from './components/AuthModal';
 import { AccountProfileModal } from './components/AccountProfileModal';
+import { LockScreen } from './components/LockScreen';
 import { INITIAL_PRODUCTS, Product } from './data/products';
 import { useCart } from './hooks/useCart';
 import { useAuth } from './hooks/useAuth';
 import { getBackendStatus } from './lib/supabase';
-import { ShoppingBag, Play, Instagram, Tag, User, Sparkles } from 'lucide-react';
+import { ShoppingBag, Play, Instagram, Tag, User, Sparkles, Lock } from 'lucide-react';
 
 export default function App() {
   const [hasEntered, setHasEntered] = useState<boolean>(false);
@@ -30,6 +31,15 @@ export default function App() {
   const [isAuthOpen, setIsAuthOpen] = useState<boolean>(false);
   const [isProfileOpen, setIsProfileOpen] = useState<boolean>(false);
   const [currentPage, setCurrentPage] = useState<number>(0); // Starts on Chapter 1: GA2100 Showcase
+
+  // Website locked with passcode 2330
+  const [isSiteLocked, setIsSiteLocked] = useState<boolean>(() => {
+    try {
+      return sessionStorage.getItem('sdmw_unlocked_2330') !== 'true';
+    } catch {
+      return true;
+    }
+  });
 
   // Ghost Magic Punch Pop-up state
   const [ghostModalData, setGhostModalData] = useState<{
@@ -136,6 +146,19 @@ export default function App() {
       });
     }
   };
+
+  if (isSiteLocked) {
+    return (
+      <LockScreen
+        onUnlock={() => {
+          try {
+            sessionStorage.setItem('sdmw_unlocked_2330', 'true');
+          } catch {}
+          setIsSiteLocked(false);
+        }}
+      />
+    );
+  }
 
   return (
     <div className="min-h-screen bg-[#f3f4f6] text-black flex flex-col justify-between font-sans selection:bg-yellow-300 selection:text-black">
@@ -302,6 +325,21 @@ export default function App() {
             >
               <Play size={13} className="fill-black" />
               <span>INTRO</span>
+            </button>
+
+            {/* Lock Site Quick Toggle */}
+            <button
+              onClick={() => {
+                try {
+                  sessionStorage.removeItem('sdmw_unlocked_2330');
+                } catch {}
+                setIsSiteLocked(true);
+              }}
+              className="flex items-center gap-1.5 bg-red-100 hover:bg-red-200 text-red-900 border-2 border-black px-2.5 py-1.5 text-xs font-black transition-colors cursor-pointer shadow-[2px_2px_0px_#000]"
+              title="Lock website with passcode 2330"
+            >
+              <Lock size={13} className="text-red-700" />
+              <span className="hidden sm:inline">LOCK SITE</span>
             </button>
 
             {/* Instagram Quick Link */}
