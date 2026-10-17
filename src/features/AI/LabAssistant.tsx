@@ -55,27 +55,27 @@ export const LabAssistant: React.FC<LabAssistantProps> = ({
       if (q.includes('custom') || q.includes('who cares') || q.includes('marley')) {
         return {
           reply: 'The Custom Collection is $100 per watch (including "Who Cares, I’m Already Late" and "Bob Marley" multicolor).',
-          actionDestination: 5,
+          actionDestination: 1,
           actionLabel: 'View Custom Collection ($100)'
         };
       }
       if (q.includes('ap') || q.includes('steel') || q.includes('band')) {
         return {
           reply: 'The GA2100 AP Band Collection is $110 per watch. These feature 316L stainless steel AP-style bezels and integrated bracelets.',
-          actionDestination: 6,
+          actionDestination: 2,
           actionLabel: 'View AP Band Collection ($110)'
         };
       }
       if (q.includes('sock') || q.includes('beanie')) {
         return {
-          reply: 'Supreme Socks are $20 (4-pack in black or white), and Supreme Beanies are $75. Note: Apparel is currently marked COMING SOON.',
-          actionDestination: 8,
-          actionLabel: 'View Accessories'
+          reply: 'Supreme Socks are $20 (4-pack in black or white), and Supreme Beanies are $75. Note: Apparel is currently marked COMING SOON in Chapter 2.',
+          actionDestination: 5,
+          actionLabel: 'View Chapter 2: Cloths'
         };
       }
       return {
-        reply: 'Current pricing across our workshop:\n• GA2100 Showcase: $85\n• Custom Collection: $100\n• AP Band Conversion: $110\n• All watches are eligible for a $20 deposit hold!',
-        actionDestination: 4,
+        reply: 'Current pricing across our workshop:\n• Chapter 1: GA2100 Showcase: $85\n• Custom Collection: $100\n• AP Band Conversion: $110\n• All watches are eligible for a $20 deposit hold!',
+        actionDestination: 0,
         actionLabel: 'Browse Showcase ($85)'
       };
     }
@@ -88,7 +88,7 @@ export const LabAssistant: React.FC<LabAssistantProps> = ({
 
       return {
         reply: `Here are our exact Deposit Rules:\n• Minimum Deposit: $20 to lock your watch.\n• Duration: Held for 7 business days exclusively.\n• Cancellation / Expiration: 50% refund policy if canceled.\n• Sunday Cutoff: No new deposits after 5:00 PM Central Time.\n\n${sundayNotice}`,
-        actionDestination: 1,
+        actionDestination: 7,
         actionLabel: 'Read Deposit Information'
       };
     }
@@ -97,7 +97,7 @@ export const LabAssistant: React.FC<LabAssistantProps> = ({
     if (q.includes('meet') || q.includes('chicago') || q.includes('indiana') || q.includes('nwi') || q.includes('pickup') || q.includes('local')) {
       return {
         reply: 'Sean provides free in-person handovers at verified public locations!\n• Chicago: Millennium Park Plaza, Wicker Park Square, Navy Pier, River North.\n• Northwest Indiana: Centennial Park (Munster), Valparaiso Square, Highland Library concourse, Crown Point.\nAll meet-ups are scheduled in safe public places with time to try on the watch.',
-        actionDestination: 2,
+        actionDestination: 8,
         actionLabel: 'View Chicago & NWI Meet-ups'
       };
     }
@@ -106,7 +106,7 @@ export const LabAssistant: React.FC<LabAssistantProps> = ({
     if (q.includes('warranty') || q.includes('authentic') || q.includes('real') || q.includes('guarantee')) {
       return {
         reply: 'All watches come with a 1-Year Limited Movement Warranty! We use 100% genuine Casio GA2100 movements with Carbon Core Guard and 200M water resistance. It covers internal movement accuracy, hand alignment, and custom dial components.',
-        actionDestination: 0,
+        actionDestination: 6,
         actionLabel: 'Read Warranty Details'
       };
     }
@@ -115,7 +115,7 @@ export const LabAssistant: React.FC<LabAssistantProps> = ({
     if (q.includes('ship') || q.includes('tracking') || q.includes('delivery') || q.includes('mail')) {
       return {
         reply: 'Shipping Options:\n• Local Meet-Up: FREE (Chicago & NWI)\n• USPS Priority Insured: $10 (2-3 business days with tracking)\n• Expedited Signature Delivery: $25 (1-2 business days)\nEvery watch is double-boxed in comic-themed protective packaging.',
-        actionDestination: 1,
+        actionDestination: 7,
         actionLabel: 'View Shipping Policies'
       };
     }
@@ -124,7 +124,7 @@ export const LabAssistant: React.FC<LabAssistantProps> = ({
     if (q.includes('rainbow') || q.includes('infinity') || q.includes('stones') || q.includes('blood shot') || q.includes('art board')) {
       return {
         reply: 'Looking for a colorful build? The "Rainbow on White (Infinity Stones)", "Rainbow on Black (Night Sky)", and "Red on Red (Blood Shot)" are part of our GA2100 Showcase for $85!',
-        actionDestination: 4,
+        actionDestination: 0,
         actionLabel: 'Explore Showcase Models'
       };
     }
@@ -132,9 +132,9 @@ export const LabAssistant: React.FC<LabAssistantProps> = ({
     // 7. Custom 1-of-1 requests / Instagram
     if (q.includes('custom') || q.includes('dm') || q.includes('instagram') || q.includes('sean') || q.includes('contact')) {
       return {
-        reply: 'Have a custom colorway idea? Reach out to Sean directly on Instagram @seandidmywrist. He discusses custom 1-of-1 requests, special strap conversions, and sizing questions!',
+        reply: 'Have a custom colorway idea? Reach out to Sean directly on Instagram @seandidmywrist or check our Contact page in Chapter 3. He discusses custom 1-of-1 requests, special strap conversions, and sizing questions!',
         actionDestination: 10,
-        actionLabel: 'Go to Contact & Instagram'
+        actionLabel: 'Contact Sean & Support'
       };
     }
 

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Sparkles, X } from 'lucide-react';
+import { Sparkles, X, Gift } from 'lucide-react';
 
 export const PromoBanner: React.FC = () => {
   const [visible, setVisible] = useState(true);
@@ -15,11 +15,20 @@ export const PromoBanner: React.FC = () => {
         exit={{ height: 0, opacity: 0 }}
         className="bg-black text-white py-2 px-4 border-b-3 border-black text-center relative z-40 select-none"
       >
-        <div className="max-w-6xl mx-auto flex items-center justify-center gap-2 pr-6">
+        <div className="max-w-6xl mx-auto flex flex-wrap items-center justify-center gap-2 pr-6 text-xs md:text-sm">
           <Sparkles size={16} className="text-yellow-400 shrink-0 animate-pulse" />
-          <p className="comic-font text-sm md:text-base tracking-wider text-white">
-            WELCOME TO SEANDIDMYWRIST — TAKE <span className="text-yellow-400 underline decoration-2">5% OFF</span> YOUR FIRST ORDER.
-          </p>
+          <span className="comic-font tracking-wider text-white">
+            5% OFF ORDERS $85+
+          </span>
+          <span className="text-yellow-400 font-bold">•</span>
+          <span className="comic-font tracking-wider text-yellow-300">
+            10% OFF ORDERS $125+ WITH CODE: <span className="bg-yellow-300 text-black px-1 py-0.5 border border-black font-mono font-bold">ONESTOPSHOP</span>
+          </span>
+          <span className="text-yellow-400 font-bold hidden sm:inline">•</span>
+          <span className="hidden sm:inline-flex items-center gap-1 text-red-400 font-bold">
+            <Gift size={13} className="text-red-400" />
+            LOYALTY PUNCH CARD: 5 PUNCHES = 1 FREE WATCH!
+          </span>
         </div>
         <button
           onClick={() => setVisible(false)}

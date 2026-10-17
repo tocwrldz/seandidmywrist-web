@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { CartItem } from '../../hooks/useCart';
-import { X, Trash2, Plus, Minus, ShoppingBag, ArrowRight, Bookmark, ShieldCheck } from 'lucide-react';
+import { X, Trash2, Plus, Minus, ShoppingBag, ArrowRight, ShieldCheck, Tag, Check, AlertCircle } from 'lucide-react';
 
 interface CartDrawerProps {
   isOpen: boolean;
@@ -9,8 +9,11 @@ interface CartDrawerProps {
   cart: CartItem[];
   subtotal: number;
   discountAmount: number;
+  appliedDiscountName?: string;
   total: number;
-  isFirstOrder: boolean;
+  promoCode?: string;
+  onApplyPromoCode?: (code: string) => { success: boolean; message: string };
+  onRemovePromoCode?: () => void;
   onUpdateQuantity: (productId: string, delta: number, isDeposit?: boolean) => void;
   onRemoveItem: (productId: string, isDeposit?: boolean) => void;
   onProceedToCheckout: () => void;
@@ -22,12 +25,26 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
   cart,
   subtotal,
   discountAmount,
+  appliedDiscountName = '',
   total,
-  isFirstOrder,
+  promoCode = '',
+  onApplyPromoCode,
+  onRemovePromoCode,
   onUpdateQuantity,
   onRemoveItem,
   onProceedToCheckout
 }) => {
+  const [inputCode, setInputCode] = useState('');
+  const [promoMessage, setPromoMessage] = useState<{ text: string; isError: boolean } | null>(null);
+
+  const handleApply = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!inputCode.trim() || !onApplyPromoCode) return;
+    const res = onApplyPromoCode(inputCode);
+    setPromoMessage({ text: res.message, isError: !res.success });
+    if (res.success) setInputCode('');
+  };
+
   return (
     <AnimatePresence>
       {isOpen && (
@@ -66,14 +83,22 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
               </button>
             </div>
 
-            {/* Offer Banner */}
-            {isFirstOrder && (
-              <div className="bg-yellow-300 border-b-3 border-black p-2.5 text-center">
-                <p className="comic-font text-sm text-black tracking-wide">
-                  🎉 FIRST ORDER 5% DISCOUNT APPLIED AT CHECKOUT!
+            {/* Offer Guidance Status Banner */}
+            <div className="bg-yellow-300 border-b-3 border-black p-2.5 text-center text-xs font-bold text-black">
+              {subtotal >= 125 ? (
+                <p>
+                  🎉 Order qualifies for <span className="underline font-black">10% OFF</span> with code <span className="bg-black text-white px-1.5 py-0.5 font-mono">ONESTOPSHOP</span>!
                 </p>
-              </div>
-            )}
+              ) : subtotal >= 85 ? (
+                <p>
+                  ✅ <span className="underline font-black">5% DISCOUNT APPLIED</span> on your order! (Add ${(126 - subtotal).toFixed(2)} more for 10% off with ONESTOPSHOP)
+                </p>
+              ) : (
+                <p>
+                  💡 Orders $85+ get <span className="underline font-black">5% OFF</span>! Add ${(85 - subtotal).toFixed(2)} to unlock. (Orders under $80 do not receive 5% off)
+                </p>
+              )}
+            </div>
 
             {/* Cart Items List */}
             <div className="flex-grow overflow-y-auto p-4 space-y-3">
@@ -159,19 +184,66 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
               )}
             </div>
 
-            {/* Bottom Summary & Checkout Button */}
+            {/* Bottom Summary & Promo Code Section */}
             {cart.length > 0 && (
               <div className="bg-white border-t-4 border-black p-5 space-y-3">
+                {/* Promo Code Input */}
+                <form onSubmit={handleApply} className="flex gap-2">
+                  <div className="relative flex-grow">
+                    <Tag size={14} className="absolute left-2.5 top-1/2 -translate-y-1/2 text-gray-500" />
+                    <input
+                      type="text"
+                      placeholder="PROMO CODE (e.g. ONESTOPSHOP)"
+                      value={inputCode}
+                      onChange={(e) => setInputCode(e.target.value.toUpperCase())}
+                      className="w-full bg-gray-50 border-2 border-black pl-8 pr-2 py-1.5 text-xs font-bold uppercase focus:outline-none focus:bg-yellow-50"
+                    />
+                  </div>
+                  <button
+                    type="submit"
+                    className="bg-black hover:bg-yellow-400 hover:text-black text-white px-3 py-1.5 border-2 border-black text-xs font-bold transition-colors cursor-pointer"
+                  >
+                    APPLY
+                  </button>
+                </form>
+
+                {promoMessage && (
+                  <div className={`p-2 border border-black text-xs font-bold flex items-center gap-1.5 ${promoMessage.isError ? 'bg-red-50 text-red-700' : 'bg-green-50 text-green-800'}`}>
+                    {promoMessage.isError ? <AlertCircle size={14} /> : <Check size={14} />}
+                    <span>{promoMessage.text}</span>
+                  </div>
+                )}
+
+                {promoCode === 'ONESTOPSHOP' && (
+                  <div className="flex justify-between items-center bg-yellow-100 border border-black p-1.5 text-xs font-bold">
+                    <span className="text-black">Code applied: ONESTOPSHOP</span>
+                    {onRemovePromoCode && (
+                      <button
+                        onClick={onRemovePromoCode}
+                        className="text-red-600 hover:underline text-[11px]"
+                      >
+                        REMOVE
+                      </button>
+                    )}
+                  </div>
+                )}
+
+                {/* Subtotals & Discounts */}
                 <div className="space-y-1.5 text-xs font-bold">
                   <div className="flex justify-between text-gray-700">
                     <span>SUBTOTAL:</span>
                     <span className="font-mono text-sm">${subtotal.toFixed(2)}</span>
                   </div>
 
-                  {isFirstOrder && (
+                  {discountAmount > 0 ? (
                     <div className="flex justify-between text-green-700">
-                      <span>FIRST ORDER DISCOUNT (5%):</span>
+                      <span>DISCOUNT ({appliedDiscountName || '5% off $85+'}):</span>
                       <span className="font-mono text-sm">-${discountAmount.toFixed(2)}</span>
+                    </div>
+                  ) : (
+                    <div className="flex justify-between text-gray-400 text-[11px]">
+                      <span>DISCOUNT (Orders $85+):</span>
+                      <span>$0.00</span>
                     </div>
                   )}
 

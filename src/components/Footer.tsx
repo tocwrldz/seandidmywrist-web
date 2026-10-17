@@ -30,7 +30,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigateToPage, onOpenAdmin })
         {/* Comic Index Navigation Links */}
         <div>
           <h4 className="comic-font text-2xl text-black mb-4 bg-yellow-300 inline-block px-2 border-2 border-black shadow-[2px_2px_0px_#000]">
-            EXPLORE THE COMIC
+            TABLE OF CONTENTS
           </h4>
           <ul className="space-y-2 text-xs font-bold text-gray-800">
             <li>
@@ -38,7 +38,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigateToPage, onOpenAdmin })
                 onClick={() => onNavigateToPage(0)}
                 className="hover:text-red-600 hover:translate-x-1 transition-all cursor-pointer text-left"
               >
-                1. Why Shop With Sean
+                CH 1: GA2100 Showcase ($85)
               </button>
             </li>
             <li>
@@ -46,7 +46,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigateToPage, onOpenAdmin })
                 onClick={() => onNavigateToPage(1)}
                 className="hover:text-red-600 hover:translate-x-1 transition-all cursor-pointer text-left"
               >
-                2. Deposit Information
+                CH 1: Custom Collection ($100)
               </button>
             </li>
             <li>
@@ -54,7 +54,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigateToPage, onOpenAdmin })
                 onClick={() => onNavigateToPage(2)}
                 className="hover:text-red-600 hover:translate-x-1 transition-all cursor-pointer text-left"
               >
-                3. Chicago Meet-Ups
+                CH 1: AP Band Collection ($110)
               </button>
             </li>
             <li>
@@ -62,7 +62,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigateToPage, onOpenAdmin })
                 onClick={() => onNavigateToPage(3)}
                 className="hover:text-red-600 hover:translate-x-1 transition-all cursor-pointer text-left"
               >
-                4. Northwest Indiana Meet-Ups
+                CH 1: The Sold Archives Vault
               </button>
             </li>
             <li>
@@ -70,7 +70,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigateToPage, onOpenAdmin })
                 onClick={() => onNavigateToPage(4)}
                 className="hover:text-red-600 hover:translate-x-1 transition-all cursor-pointer text-left"
               >
-                5. GA2100 Showcase ($85)
+                CH 2: Sweatsuits & Cloths
               </button>
             </li>
             <li>
@@ -78,29 +78,29 @@ export const Footer: React.FC<FooterProps> = ({ onNavigateToPage, onOpenAdmin })
                 onClick={() => onNavigateToPage(5)}
                 className="hover:text-red-600 hover:translate-x-1 transition-all cursor-pointer text-left"
               >
-                6. Custom Collection ($100)
-              </button>
-            </li>
-            <li>
-              <button
-                onClick={() => onNavigateToPage(6)}
-                className="hover:text-red-600 hover:translate-x-1 transition-all cursor-pointer text-left"
-              >
-                7. AP Band Collection ($110)
+                CH 2: Socks & Beanies
               </button>
             </li>
           </ul>
         </div>
 
-        {/* Customer Care & Policies */}
+        {/* Customer Care & Policies (Chapter 3: Info) */}
         <div>
           <h4 className="comic-font text-2xl text-black mb-4 bg-yellow-300 inline-block px-2 border-2 border-black shadow-[2px_2px_0px_#000]">
-            LAB POLICIES
+            CHAPTER 3: INFO
           </h4>
           <ul className="space-y-2 text-xs font-bold text-gray-800">
             <li>
               <button
-                onClick={() => onNavigateToPage(1)}
+                onClick={() => onNavigateToPage(6)}
+                className="hover:text-red-600 hover:translate-x-1 transition-all cursor-pointer text-left"
+              >
+                • Why Shop With Sean
+              </button>
+            </li>
+            <li>
+              <button
+                onClick={() => onNavigateToPage(7)}
                 className="hover:text-red-600 hover:translate-x-1 transition-all cursor-pointer text-left"
               >
                 • $20 Deposit & Sunday Cutoff
@@ -108,10 +108,10 @@ export const Footer: React.FC<FooterProps> = ({ onNavigateToPage, onOpenAdmin })
             </li>
             <li>
               <button
-                onClick={() => onNavigateToPage(0)}
+                onClick={() => onNavigateToPage(8)}
                 className="hover:text-red-600 hover:translate-x-1 transition-all cursor-pointer text-left"
               >
-                • 1-Year Movement Warranty
+                • Chicago Meet-Ups
               </button>
             </li>
             <li>
@@ -119,7 +119,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigateToPage, onOpenAdmin })
                 onClick={() => onNavigateToPage(9)}
                 className="hover:text-red-600 hover:translate-x-1 transition-all cursor-pointer text-left"
               >
-                • The Sold Archives Vault
+                • Northwest Indiana Meet-Ups
               </button>
             </li>
             <li>
@@ -127,7 +127,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigateToPage, onOpenAdmin })
                 onClick={() => onNavigateToPage(10)}
                 className="hover:text-red-600 hover:translate-x-1 transition-all cursor-pointer text-left"
               >
-                • Direct Workshop Support
+                • Contact & Workshop Support
               </button>
             </li>
           </ul>

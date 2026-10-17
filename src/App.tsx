@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { OpeningScreen } from './features/Intro/OpeningScreen';
-import { ComicBook, COMIC_PAGES } from './features/Shop/ComicBook';
-import { ProductCard } from './features/Shop/ProductCard';
+import { ComicBook } from './features/Shop/ComicBook';
 import { ProductDetailModal } from './features/Shop/ProductDetailModal';
 import { CartDrawer } from './features/Shop/CartDrawer';
 import { CheckoutModal } from './features/Shop/CheckoutModal';
@@ -10,10 +9,15 @@ import { LabAssistant } from './features/AI/LabAssistant';
 import { PromoBanner } from './components/PromoBanner';
 import { Footer } from './components/Footer';
 import { GhostMascot } from './components/GhostMascot';
+import { LoyaltyPunchCard } from './components/LoyaltyPunchCard';
+import { GhostPunchCardModal } from './components/GhostPunchCardModal';
+import { AuthModal } from './components/AuthModal';
+import { AccountProfileModal } from './components/AccountProfileModal';
 import { INITIAL_PRODUCTS, Product } from './data/products';
 import { useCart } from './hooks/useCart';
+import { useAuth } from './hooks/useAuth';
 import { getBackendStatus } from './lib/supabase';
-import { ShoppingBag, Play, Instagram, ShieldCheck, Database } from 'lucide-react';
+import { ShoppingBag, Play, Instagram, Tag, User, Sparkles } from 'lucide-react';
 
 export default function App() {
   const [hasEntered, setHasEntered] = useState<boolean>(false);
@@ -22,7 +26,23 @@ export default function App() {
   const [isCartOpen, setIsCartOpen] = useState<boolean>(false);
   const [isCheckoutOpen, setIsCheckoutOpen] = useState<boolean>(false);
   const [isAdminOpen, setIsAdminOpen] = useState<boolean>(false);
-  const [currentPage, setCurrentPage] = useState<number>(0); // Starts on Page 1: Why Shop With Sean
+  const [isLoyaltyOpen, setIsLoyaltyOpen] = useState<boolean>(false);
+  const [isAuthOpen, setIsAuthOpen] = useState<boolean>(false);
+  const [isProfileOpen, setIsProfileOpen] = useState<boolean>(false);
+  const [currentPage, setCurrentPage] = useState<number>(0); // Starts on Chapter 1: GA2100 Showcase
+
+  // Ghost Magic Punch Pop-up state
+  const [ghostModalData, setGhostModalData] = useState<{
+    isOpen: boolean;
+    watchesBought: number;
+    previousPunches: number;
+    newPunches: number;
+  }>({
+    isOpen: false,
+    watchesBought: 1,
+    previousPunches: 0,
+    newPunches: 1
+  });
 
   const {
     cart,
@@ -32,12 +52,28 @@ export default function App() {
     clearCart,
     subtotal,
     discountAmount,
+    appliedDiscountName,
+    promoCode,
+    applyPromoCode,
+    removePromoCode,
     total,
-    isFirstOrder,
     totalItemsCount
   } = useCart();
 
-  const backendStatus = getBackendStatus();
+  const {
+    currentUser,
+    users,
+    signUp,
+    signIn,
+    signOut,
+    loginAsDemo,
+    addWatchPunches,
+    redeemFreeWatch,
+    resetUserPunches
+  } = useAuth();
+
+  const activePunches = currentUser ? currentUser.loyaltyPunches : 0;
+  const activeFreeWatches = currentUser ? currentUser.freeWatchesEarned : 0;
 
   // Admin inventory updates
   const handleUpdateProductStatus = (id: string, newStatus: Product['status']) => {
@@ -57,19 +93,62 @@ export default function App() {
     setIsCartOpen(true);
   };
 
+  /**
+   * Watch-only purchase handler: triggers the ghost poof animation
+   * and sequential 5-hole punch animation.
+   */
+  const handleWatchPurchaseSuccess = (
+    watchCount: number,
+    orderId: string,
+    grandTotal: number,
+    itemsSummary: string
+  ) => {
+    if (currentUser && watchCount > 0) {
+      const result = addWatchPunches(watchCount, orderId, grandTotal, itemsSummary);
+      if (result) {
+        setGhostModalData({
+          isOpen: true,
+          watchesBought: watchCount,
+          previousPunches: result.previousPunches,
+          newPunches: result.newPunches
+        });
+      }
+    }
+  };
+
+  /**
+   * Interactive simulation: allows testing 1, 2, or 5 watches directly!
+   */
+  const handleSimulateWatchPurchase = (count: number) => {
+    if (!currentUser) {
+      setIsAuthOpen(true);
+      return;
+    }
+    const orderId = 'SDMW-SIM-' + Math.floor(100000 + Math.random() * 900000);
+    const result = addWatchPunches(count, orderId, count * 85, `${count}x Simulated Custom Watch`);
+    if (result) {
+      setGhostModalData({
+        isOpen: true,
+        watchesBought: count,
+        previousPunches: result.previousPunches,
+        newPunches: result.newPunches
+      });
+    }
+  };
+
   return (
     <div className="min-h-screen bg-[#f3f4f6] text-black flex flex-col justify-between font-sans selection:bg-yellow-300 selection:text-black">
-      {/* 1. FULLSCREEN OPENING SCREEN GATE (Phase 1) */}
+      {/* 1. FULLSCREEN OPENING SCREEN GATE */}
       {!hasEntered && (
         <OpeningScreen
           onEnterShop={() => {
             setHasEntered(true);
-            setCurrentPage(0); // Starts on Page 1
+            setCurrentPage(0); // Starts on Chapter 1: Page 1
           }}
         />
       )}
 
-      {/* 2. PROMO BANNER (Phase 3 First-Time Shopper 5% Offer) */}
+      {/* 2. PROMO BANNER (5% off $85+, 10% off $125+ with ONESTOPSHOP, 5 punches = free watch) */}
       <PromoBanner />
 
       {/* 3. MAIN APP HEADER */}
@@ -77,7 +156,6 @@ export default function App() {
         <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between gap-4">
           {/* Brand Left: Logo & Interactive Ghost Mascot */}
           <div className="flex items-center gap-3">
-            {/* Interactive Ghost Mascot: Floats, winks, speech bubble on hover/tap */}
             <GhostMascot
               size={56}
               interactive={true}
@@ -99,68 +177,125 @@ export default function App() {
             </div>
           </div>
 
-          {/* Quick Header Navigation Links */}
-          <nav className="hidden lg:flex items-center gap-5 text-xs font-black uppercase">
+          {/* Quick Header Navigation Links Organized by Chapters */}
+          <nav className="hidden lg:flex items-center gap-4 text-xs font-black uppercase">
+            {/* Chapter 1: Watches */}
             <button
-              onClick={() => setCurrentPage(4)}
+              onClick={() => setCurrentPage(0)}
               className={`hover:text-red-600 transition-colors cursor-pointer ${
-                currentPage === 4 ? 'text-red-600 underline decoration-2' : ''
+                currentPage === 0 ? 'text-red-600 underline decoration-2' : ''
               }`}
+              title="Chapter 1: GA2100 Showcase ($85)"
             >
               Showcase ($85)
-            </button>
-            <button
-              onClick={() => setCurrentPage(5)}
-              className={`hover:text-red-600 transition-colors cursor-pointer ${
-                currentPage === 5 ? 'text-red-600 underline decoration-2' : ''
-              }`}
-            >
-              Custom ($100)
-            </button>
-            <button
-              onClick={() => setCurrentPage(6)}
-              className={`hover:text-red-600 transition-colors cursor-pointer ${
-                currentPage === 6 ? 'text-red-600 underline decoration-2' : ''
-              }`}
-            >
-              AP Band ($110)
-            </button>
-            <button
-              onClick={() => setCurrentPage(2)}
-              className={`hover:text-red-600 transition-colors cursor-pointer ${
-                currentPage === 2 ? 'text-red-600 underline decoration-2' : ''
-              }`}
-            >
-              Meet-Ups
             </button>
             <button
               onClick={() => setCurrentPage(1)}
               className={`hover:text-red-600 transition-colors cursor-pointer ${
                 currentPage === 1 ? 'text-red-600 underline decoration-2' : ''
               }`}
+              title="Chapter 1: Custom Collection ($100)"
+            >
+              Custom ($100)
+            </button>
+            <button
+              onClick={() => setCurrentPage(2)}
+              className={`hover:text-red-600 transition-colors cursor-pointer ${
+                currentPage === 2 ? 'text-red-600 underline decoration-2' : ''
+              }`}
+              title="Chapter 1: AP Band Collection ($110)"
+            >
+              AP Band ($110)
+            </button>
+
+            {/* Chapter 2: Cloths */}
+            <button
+              onClick={() => setCurrentPage(4)}
+              className={`hover:text-red-600 transition-colors cursor-pointer ${
+                currentPage === 4 || currentPage === 5 ? 'text-red-600 underline decoration-2' : ''
+              }`}
+              title="Chapter 2: Streetwear & Cloths"
+            >
+              Cloths
+            </button>
+
+            {/* Chapter 3: Info */}
+            <button
+              onClick={() => setCurrentPage(6)}
+              className={`hover:text-red-600 transition-colors cursor-pointer ${
+                currentPage === 6 ? 'text-red-600 underline decoration-2' : ''
+              }`}
+              title="Chapter 3: Why Shop With Sean"
+            >
+              Why Shop
+            </button>
+            <button
+              onClick={() => setCurrentPage(8)}
+              className={`hover:text-red-600 transition-colors cursor-pointer ${
+                currentPage === 8 ? 'text-red-600 underline decoration-2' : ''
+              }`}
+              title="Chapter 3: Chicago Meet-Ups"
+            >
+              Meet-Ups
+            </button>
+            <button
+              onClick={() => setCurrentPage(7)}
+              className={`hover:text-red-600 transition-colors cursor-pointer ${
+                currentPage === 7 ? 'text-red-600 underline decoration-2' : ''
+              }`}
+              title="Chapter 3: $20 Deposit Policy"
             >
               $20 Deposit
             </button>
             <button
-              onClick={() => setCurrentPage(9)}
+              onClick={() => setCurrentPage(3)}
               className={`hover:text-red-600 transition-colors cursor-pointer ${
-                currentPage === 9 ? 'text-red-600 underline decoration-2' : ''
+                currentPage === 3 ? 'text-red-600 underline decoration-2' : ''
               }`}
+              title="Chapter 1: The Sold Archives Vault"
             >
               Sold Vault
             </button>
           </nav>
 
           {/* Header Right Actions */}
-          <div className="flex items-center gap-2.5">
+          <div className="flex items-center gap-2 sm:gap-2.5">
+            {/* VIP Account & Punch Card Header Trigger */}
+            {currentUser ? (
+              <button
+                onClick={() => setIsProfileOpen(true)}
+                className="flex items-center gap-1.5 bg-yellow-300 hover:bg-yellow-400 border-2 border-black px-2.5 py-1.5 text-xs font-bold transition-colors cursor-pointer shadow-[2px_2px_0px_#000]"
+                title={`Logged in as ${currentUser.name}. Click to view VIP profile & 5-hole punch card.`}
+                aria-label="View VIP Account and 5-hole punch card"
+              >
+                <User size={14} className="text-black" />
+                <span className="hidden sm:inline">{currentUser.name.split(' ')[0]}</span>
+                <span className="bg-black text-yellow-300 text-[10px] font-black px-1.5 py-0.2 rounded-full">
+                  {currentUser.loyaltyPunches}/5 🎟️
+                </span>
+              </button>
+            ) : (
+              <button
+                onClick={() => setIsAuthOpen(true)}
+                className="flex items-center gap-1.5 bg-black hover:bg-yellow-400 hover:text-black text-yellow-300 border-2 border-black px-2.5 py-1.5 text-xs font-bold transition-colors cursor-pointer shadow-[2px_2px_0px_#000]"
+                title="Sign In or Create Account to earn loyalty points on watch purchases!"
+              >
+                <User size={14} />
+                <span className="hidden sm:inline">JOIN VIP</span>
+                <span className="text-[10px] bg-yellow-300 text-black px-1 font-black rounded-full">
+                  5=FREE
+                </span>
+              </button>
+            )}
+
             {/* Replay Intro Cinematic Button */}
             <button
               onClick={() => setHasEntered(false)}
-              className="hidden sm:flex items-center gap-1.5 bg-gray-100 hover:bg-yellow-200 border-2 border-black px-2.5 py-1.5 text-xs font-bold transition-colors cursor-pointer shadow-[2px_2px_0px_#000]"
+              className="hidden md:flex items-center gap-1.5 bg-gray-100 hover:bg-yellow-200 border-2 border-black px-2.5 py-1.5 text-xs font-bold transition-colors cursor-pointer shadow-[2px_2px_0px_#000]"
               title="Re-play the Casio G-Shock materialization intro scene"
             >
               <Play size={13} className="fill-black" />
-              <span>REPLAY INTRO</span>
+              <span>INTRO</span>
             </button>
 
             {/* Instagram Quick Link */}
@@ -168,7 +303,7 @@ export default function App() {
               href="https://www.instagram.com/seandidmywrist/"
               target="_blank"
               rel="noopener noreferrer"
-              className="hidden md:flex items-center gap-1.5 bg-pink-50 hover:bg-pink-100 border-2 border-black px-2.5 py-1.5 text-xs font-bold transition-colors cursor-pointer shadow-[2px_2px_0px_#000]"
+              className="hidden xl:flex items-center gap-1.5 bg-pink-50 hover:bg-pink-100 border-2 border-black px-2.5 py-1.5 text-xs font-bold transition-colors cursor-pointer shadow-[2px_2px_0px_#000]"
             >
               <Instagram size={14} className="text-pink-600" />
               <span>@SEANDIDMYWRIST</span>
@@ -192,21 +327,23 @@ export default function App() {
         </div>
       </header>
 
-      {/* 4. MAIN COMIC BOOK EXPERIENCE SPREAD */}
-      <main className="flex-grow">
+      {/* 4. INTERACTIVE COMIC BOOK APP (With Table of Contents & Compact Preview) */}
+      <main className="flex-grow py-2 sm:py-4">
         <ComicBook
           products={products}
-          onAddToCart={(product, isDeposit) => addToCart(product, isDeposit)}
+          onAddToCart={addToCart}
           onViewDetails={(product) => setSelectedProduct(product)}
           onReserveDeposit={handleReserveDeposit}
           onOpenCart={() => setIsCartOpen(true)}
+          onOpenLoyaltyCard={() => setIsLoyaltyOpen(true)}
+          loyaltyPunches={activePunches}
           cartCount={totalItemsCount}
           currentPage={currentPage}
           onPageChange={(pageIdx) => setCurrentPage(pageIdx)}
         />
       </main>
 
-      {/* 5. FLOATING AI LAB ASSISTANT (Phase 6) */}
+      {/* 5. FLOATING AI LAB ASSISTANT */}
       <LabAssistant
         onNavigateToPage={(pageIdx) => setCurrentPage(pageIdx)}
         onOpenCart={() => setIsCartOpen(true)}
@@ -227,8 +364,11 @@ export default function App() {
         cart={cart}
         subtotal={subtotal}
         discountAmount={discountAmount}
+        appliedDiscountName={appliedDiscountName}
         total={total}
-        isFirstOrder={isFirstOrder}
+        promoCode={promoCode}
+        onApplyPromoCode={applyPromoCode}
+        onRemovePromoCode={removePromoCode}
         onUpdateQuantity={updateQuantity}
         onRemoveItem={removeFromCart}
         onProceedToCheckout={() => {
@@ -245,7 +385,66 @@ export default function App() {
         subtotal={subtotal}
         discountAmount={discountAmount}
         onClearCart={clearCart}
+        currentUser={currentUser}
+        onWatchPurchaseSuccess={handleWatchPurchaseSuccess}
+        onAddLoyaltyPunch={() => handleSimulateWatchPurchase(1)}
+        loyaltyPunches={activePunches}
+        onOpenLoyaltyCard={() => setIsLoyaltyOpen(true)}
+        onOpenAuth={() => setIsAuthOpen(true)}
       />
+
+      {/* VIP Loyalty 5-Hole Punch Card Modal */}
+      <LoyaltyPunchCard
+        isOpen={isLoyaltyOpen}
+        onClose={() => setIsLoyaltyOpen(false)}
+        punches={activePunches}
+        freeWatchesEarned={activeFreeWatches}
+        currentUser={currentUser}
+        onAddPunch={(cnt) => handleSimulateWatchPurchase(cnt || 1)}
+        onRedeemReward={redeemFreeWatch}
+        onResetCard={resetUserPunches}
+        onOpenAuth={() => {
+          setIsLoyaltyOpen(false);
+          setIsAuthOpen(true);
+        }}
+      />
+
+      {/* The Ghost of SeanDidMyWrist Magic Poof & Punch Modal */}
+      <GhostPunchCardModal
+        isOpen={ghostModalData.isOpen}
+        onClose={() => setGhostModalData((prev) => ({ ...prev, isOpen: false }))}
+        currentUser={currentUser}
+        watchesBought={ghostModalData.watchesBought}
+        previousPunches={ghostModalData.previousPunches}
+        newPunches={ghostModalData.newPunches}
+        onRedeemReward={redeemFreeWatch}
+      />
+
+      {/* Auth Modal (Sign Up, Log In, 1-Click Demo Profiles) */}
+      <AuthModal
+        isOpen={isAuthOpen}
+        onClose={() => setIsAuthOpen(false)}
+        onSignUp={signUp}
+        onSignIn={signIn}
+        onLoginDemo={loginAsDemo}
+        users={users}
+      />
+
+      {/* Account Profile & Rewards Ledger Modal */}
+      {currentUser && (
+        <AccountProfileModal
+          isOpen={isProfileOpen}
+          onClose={() => setIsProfileOpen(false)}
+          currentUser={currentUser}
+          onSignOut={signOut}
+          onRedeemReward={redeemFreeWatch}
+          onSimulateWatchPurchase={handleSimulateWatchPurchase}
+          onOpenLoyaltyCard={() => {
+            setIsProfileOpen(false);
+            setIsLoyaltyOpen(true);
+          }}
+        />
+      )}
 
       {/* Admin Control Center Modal */}
       <AdminModal

@@ -5,6 +5,8 @@ import { SHIPPING_POLICY } from '../../data/policies';
 import { checkDepositEligibility, calculateReservationDeadline, formatDeadline } from '../../lib/businessRules';
 import { X, CheckCircle, ShieldAlert, CreditCard, DollarSign, MapPin, Truck, Check, Bookmark } from 'lucide-react';
 
+import { UserProfile } from '../../hooks/useAuth';
+
 interface CheckoutModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -12,6 +14,12 @@ interface CheckoutModalProps {
   subtotal: number;
   discountAmount: number;
   onClearCart: () => void;
+  currentUser?: UserProfile | null;
+  onWatchPurchaseSuccess?: (watchCount: number, orderId: string, grandTotal: number, summary: string) => void;
+  onAddLoyaltyPunch?: () => void;
+  loyaltyPunches?: number;
+  onOpenLoyaltyCard?: () => void;
+  onOpenAuth?: () => void;
 }
 
 export const CheckoutModal: React.FC<CheckoutModalProps> = ({
@@ -20,7 +28,13 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
   cart,
   subtotal,
   discountAmount,
-  onClearCart
+  onClearCart,
+  currentUser,
+  onWatchPurchaseSuccess,
+  onAddLoyaltyPunch,
+  loyaltyPunches = 0,
+  onOpenLoyaltyCard,
+  onOpenAuth
 }) => {
   const [step, setStep] = useState<'info' | 'payment' | 'confirmed'>('info');
   const [name, setName] = useState('');
@@ -73,12 +87,24 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
     setIsProcessing(true);
     setErrorMsg('');
 
+    // Calculate number of custom watches in the cart (A WATCH AND A WATCH ONLY)
+    const watchCount = cart.reduce((total, item) => item.product.isWatch ? total + item.quantity : total, 0);
+    const nonWatchCount = cart.reduce((total, item) => !item.product.isWatch ? total + item.quantity : total, 0);
+
     // Simulate verified server-side transaction & order reference generation
     setTimeout(() => {
       const newOrderId = 'SDMW-' + Math.floor(100000 + Math.random() * 900000);
       setOrderId(newOrderId);
       setIsProcessing(false);
       setStep('confirmed');
+
+      const itemsSummary = cart.map((i) => `${i.quantity}x ${i.product.name}`).join(', ');
+
+      if (currentUser && watchCount > 0) {
+        onWatchPurchaseSuccess?.(watchCount, newOrderId, grandTotal, itemsSummary);
+      } else {
+        onAddLoyaltyPunch?.();
+      }
       onClearCart();
     }, 1200);
   };
@@ -505,6 +531,30 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
                   <p className="text-gray-600">
                     A confirmation email and SMS dispatch updates have been logged. Keep your order ID safe.
                   </p>
+                )}
+              </div>
+
+              {/* Loyalty Hole Punch Earned Notification (5-Hole System) */}
+              <div className="bg-yellow-300 border-3 border-black p-3.5 max-w-md mx-auto text-center shadow-[3px_3px_0px_#000]">
+                <div className="flex items-center justify-center gap-1.5 font-black text-sm text-black mb-1">
+                  <Bookmark size={16} className="text-black" />
+                  <span>LOYALTY VIP CARD: 5 PUNCHES = 1 FREE WATCH!</span>
+                </div>
+                <p className="text-xs font-bold text-gray-800">
+                  {currentUser ? (
+                    <>Tied to VIP Account <span className="underline font-black">{currentUser.name}</span>. Current card progress: <strong className="text-red-600">{currentUser.loyaltyPunches} of 5 Punches</strong>.</>
+                  ) : (
+                    <>Every watch purchase earns 1 punch on your 5-hole card. 5 punches = 1 FREE WATCH!</>
+                  )}
+                </p>
+                {onOpenLoyaltyCard && (
+                  <button
+                    type="button"
+                    onClick={onOpenLoyaltyCard}
+                    className="mt-2 text-xs font-black bg-black text-white px-3 py-1 border border-black hover:bg-yellow-400 hover:text-black cursor-pointer transition-colors"
+                  >
+                    VIEW VIP 5-HOLE PUNCH CARD
+                  </button>
                 )}
               </div>
 

@@ -10,16 +10,16 @@ interface OpeningScreenProps {
 export const OpeningScreen: React.FC<OpeningScreenProps> = ({ onEnterShop }) => {
   const [stage, setStage] = useState<'idle' | 'materializing' | 'transitioning'>('idle');
 
-  // Trigger materialization
+  // Trigger watch presentation
   const handleEnter = () => {
     if (stage !== 'idle') return;
     setStage('materializing');
 
-    // After watch materialization completes (approx 3.2s), transition to comic shop
+    // Display the realistic GA2100 with simultaneously moving center hands for ~3s, then transition
     const timer = setTimeout(() => {
       setStage('transitioning');
-      setTimeout(onEnterShop, 600);
-    }, 3200);
+      setTimeout(onEnterShop, 500);
+    }, 3000);
 
     return () => clearTimeout(timer);
   };
@@ -42,12 +42,12 @@ export const OpeningScreen: React.FC<OpeningScreenProps> = ({ onEnterShop }) => 
 
   return (
     <div
-      className="fixed inset-0 z-50 bg-white flex flex-col items-center justify-center overflow-hidden select-none"
+      className="fixed inset-0 z-50 bg-[#fafafa] flex flex-col items-center justify-center overflow-hidden select-none"
       role="region"
       aria-label="SeanDidMyWrist Opening Scene"
     >
       {/* Comic Halftone Texture Backdrop */}
-      <div className="absolute inset-0 halftone opacity-25 pointer-events-none" />
+      <div className="absolute inset-0 halftone opacity-20 pointer-events-none" />
 
       {/* Comic Book Page Border Frame */}
       <div className="absolute inset-3 md:inset-6 border-6 md:border-8 border-black pointer-events-none z-30" />
@@ -83,34 +83,16 @@ export const OpeningScreen: React.FC<OpeningScreenProps> = ({ onEnterShop }) => 
         {stage === 'idle' ? (
           <motion.div
             key="enter-prompt"
-            initial={{ opacity: 0, scale: 0.9 }}
+            initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 1.1 }}
+            exit={{ opacity: 0, scale: 1.05 }}
             className="relative z-20 flex flex-col items-center justify-center p-4"
           >
-            {/* Illustrated Comic Action Burst Background */}
-            <motion.div
-              animate={{ rotate: 360 }}
-              transition={{ duration: 40, repeat: Infinity, ease: 'linear' }}
-              className="absolute -z-10 w-[340px] h-[340px] md:w-[500px] md:h-[500px] opacity-15 pointer-events-none"
-            >
-              <svg viewBox="0 0 200 200" className="w-full h-full">
-                {[...Array(16)].map((_, i) => (
-                  <polygon
-                    key={i}
-                    points="100,100 95,0 105,0"
-                    transform={`rotate(${i * 22.5} 100 100)`}
-                    fill="#000000"
-                  />
-                ))}
-              </svg>
-            </motion.div>
-
             {/* Sub-label banner */}
             <motion.div
               initial={{ y: -10, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
-              transition={{ delay: 0.2 }}
+              transition={{ delay: 0.15 }}
               className="bg-yellow-300 text-black border-3 border-black px-4 py-1 comic-font text-lg md:text-xl shadow-[4px_4px_0px_#000000] rotate-2 mb-8"
             >
               CUSTOM G-SHOCK LAB & STREETWEAR
@@ -118,8 +100,8 @@ export const OpeningScreen: React.FC<OpeningScreenProps> = ({ onEnterShop }) => 
 
             {/* The ENTER Button: White comic-book letters with thick black outline & shadow */}
             <motion.button
-              whileHover={{ scale: 1.08, rotate: -1.5 }}
-              whileTap={{ scale: 0.94 }}
+              whileHover={{ scale: 1.06, rotate: -1 }}
+              whileTap={{ scale: 0.95 }}
               animate={{
                 y: [-3, 3, -3],
                 boxShadow: [
@@ -129,8 +111,8 @@ export const OpeningScreen: React.FC<OpeningScreenProps> = ({ onEnterShop }) => 
                 ]
               }}
               transition={{
-                y: { duration: 2, repeat: Infinity, ease: 'easeInOut' },
-                boxShadow: { duration: 2, repeat: Infinity, ease: 'easeInOut' }
+                y: { duration: 2.2, repeat: Infinity, ease: 'easeInOut' },
+                boxShadow: { duration: 2.2, repeat: Infinity, ease: 'easeInOut' }
               }}
               onClick={handleEnter}
               className="group relative bg-white border-6 border-black px-12 md:px-16 py-6 md:py-8 cursor-pointer focus:outline-none focus:ring-4 focus:ring-yellow-400"
@@ -152,82 +134,43 @@ export const OpeningScreen: React.FC<OpeningScreenProps> = ({ onEnterShop }) => 
             </p>
           </motion.div>
         ) : (
-          /* MATERIALIZATION SCENE */
+          /* REALISTIC CASIO GA2100 PRESENTATION SCENE */
+          /* No weird outer animations/distortions! Watch is completely stable, hands move simultaneously */
           <motion.div
-            key="materialize-scene"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0, scale: 1.1 }}
+            key="watch-scene"
+            initial={{ opacity: 0, scale: 0.88 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 1.05 }}
+            transition={{ duration: 0.5, ease: 'easeOut' }}
             className="relative z-20 flex flex-col items-center justify-center"
           >
-            {/* Dramatic Flash Effect */}
-            <motion.div
-              initial={{ scale: 0, opacity: 0.9 }}
-              animate={{ scale: [0, 4, 0], opacity: [0.9, 0.4, 0] }}
-              transition={{ duration: 0.9, ease: 'easeOut' }}
-              className="absolute w-40 h-40 bg-yellow-300 rounded-full z-10 pointer-events-none"
-            />
-
-            {/* Comic Shockwave Lines */}
-            {[...Array(12)].map((_, i) => (
-              <motion.div
-                key={i}
-                initial={{ opacity: 0, scaleY: 0 }}
-                animate={{
-                  opacity: [0, 1, 0],
-                  scaleY: [0.2, 1.8, 0],
-                  x: [0, Math.cos((i * 30 * Math.PI) / 180) * 160],
-                  y: [0, Math.sin((i * 30 * Math.PI) / 180) * 160]
-                }}
-                transition={{ duration: 1.2, repeat: Infinity, delay: i * 0.08 }}
-                className="absolute w-1.5 h-16 bg-black pointer-events-none origin-bottom"
-                style={{ transform: `rotate(${i * 30}deg)` }}
-              />
-            ))}
-
-            {/* The Materializing Casio G-Shock GA2100 with 3D-style tilt & rotation */}
-            <motion.div
-              initial={{ scale: 0.2, y: 80, opacity: 0, rotateY: 90, rotateZ: -25 }}
-              animate={{
-                scale: 1,
-                y: 0,
-                opacity: 1,
-                rotateY: [90, 0, -8, 8, 0],
-                rotateZ: [-25, 0, -3, 3, 0]
-              }}
-              transition={{
-                duration: 2.2,
-                type: 'spring',
-                damping: 14,
-                stiffness: 70
-              }}
-              className="relative z-20 flex flex-col items-center"
-            >
+            {/* The Realistic Casio G-Shock GA2100 Watch — Stable outer frame with simultaneously moving center hands */}
+            <div className="relative z-20 flex flex-col items-center">
               <GShockWatch
-                size={270}
-                bezelColor="#121212"
-                dialColor="#181818"
-                indicesColor="rainbow"
+                size={290}
+                bezelColor="#18181b"
+                dialColor="#121214"
+                indicesColor="#e4e4e7"
                 accentColor="#f59e0b"
-                strapColor="#151515"
+                strapColor="#1c1c20"
                 animateHands={true}
               />
-            </motion.div>
+            </div>
 
-            {/* Materializing Comic Status Caption */}
+            {/* Clean Status Caption Underneath */}
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 15 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.8 }}
+              transition={{ delay: 0.4 }}
               className="mt-6 flex flex-col items-center gap-2"
             >
-              <div className="bg-black text-white px-5 py-1.5 border-3 border-black shadow-[4px_4px_0px_#eab308]">
-                <h2 className="comic-font text-2xl md:text-3xl tracking-widest animate-pulse">
-                  MATERIALIZING GA2100 CASIOAK...
+              <div className="bg-black text-white px-6 py-2 border-3 border-black shadow-[4px_4px_0px_#eab308]">
+                <h2 className="comic-font text-2xl md:text-3xl tracking-widest text-yellow-300">
+                  CASIO G-SHOCK GA2100 CASIOAK
                 </h2>
               </div>
-              <p className="text-xs font-black tracking-widest text-gray-700 uppercase bg-white border border-black px-2 py-0.5">
-                HAND-ASSEMBLED • CHICAGO & NWI
+              <p className="text-xs font-black tracking-widest text-gray-800 uppercase bg-yellow-300 border border-black px-3 py-1 shadow-[2px_2px_0px_#000]">
+                HAND-ASSEMBLED • 1-YEAR WARRANTY • CHICAGO & NWI
               </p>
             </motion.div>
           </motion.div>
