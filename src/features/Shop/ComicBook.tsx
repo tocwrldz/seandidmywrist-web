@@ -54,7 +54,7 @@ export const COMIC_PAGES: ComicPageItem[] = [
   // =========================================================================
   {
     id: 'ga2100-showcase',
-    title: 'GA2100 Showcase ($85)',
+    title: 'GA2100 Showcase ($90)',
     chapter: 'chapter-1',
     chapterName: 'CHAPTER 1: WATCHES',
     type: 'collection',
@@ -63,7 +63,7 @@ export const COMIC_PAGES: ComicPageItem[] = [
   },
   {
     id: 'custom-collection',
-    title: 'Custom Collection ($100)',
+    title: 'Custom Collection ($110)',
     chapter: 'chapter-1',
     chapterName: 'CHAPTER 1: WATCHES',
     type: 'collection',
@@ -72,7 +72,7 @@ export const COMIC_PAGES: ComicPageItem[] = [
   },
   {
     id: 'ap-band',
-    title: 'GA2100 AP Band Collection ($110)',
+    title: 'GA2100 AP Band Collection ($125)',
     chapter: 'chapter-1',
     chapterName: 'CHAPTER 1: WATCHES',
     type: 'collection',
@@ -862,9 +862,9 @@ export const ComicBook: React.FC<ComicBookProps> = ({
                   </div>
 
                   <div className="bg-yellow-400 text-black comic-font text-lg sm:text-xl px-3 py-1 border-2 border-black shadow-[2px_2px_0px_#fff] rotate-1">
-                    {activePageMeta.id === 'ga2100-showcase' && '$85 PER WATCH'}
-                    {activePageMeta.id === 'custom-collection' && '$100 PER WATCH'}
-                    {activePageMeta.id === 'ap-band' && '$110 PER WATCH'}
+                    {activePageMeta.id === 'ga2100-showcase' && '$90 PER WATCH'}
+                    {activePageMeta.id === 'custom-collection' && '$110 PER WATCH'}
+                    {activePageMeta.id === 'ap-band' && '$125 PER WATCH'}
                     {activePageMeta.id === 'sweatsuits' && 'COMING SOON‼️'}
                     {activePageMeta.id === 'socks-beanies' && 'COMING SOON‼️'}
                   </div>

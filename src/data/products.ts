@@ -19,12 +19,12 @@ export interface Product {
 
 export const INITIAL_PRODUCTS: Product[] = [
   // ---------------------------------------------------------------------------
-  // 1. GA2100 SHOWCASE ($85)
+  // 1. GA2100 SHOWCASE ($90)
   // ---------------------------------------------------------------------------
   {
     id: 'gw-1',
     name: 'Black on Black GA2100',
-    price: 85,
+    price: 90,
     collection: 'GA2100 Showcase',
     description: 'The legendary triple-black stealth CasiOak. Matte black bezel, charcoal dial markers, and pure murdered-out minimalism.',
     status: 'available',
@@ -42,7 +42,7 @@ export const INITIAL_PRODUCTS: Product[] = [
   {
     id: 'gw-2',
     name: 'White on Black GA2100',
-    price: 85,
+    price: 90,
     collection: 'GA2100 Showcase',
     description: 'High-contrast monochrome classic. Pitch-black octagonal bezel punctuated with crisp arctic white hands and indices.',
     status: 'available',
@@ -60,7 +60,7 @@ export const INITIAL_PRODUCTS: Product[] = [
   {
     id: 'gw-3',
     name: 'Rainbow on White GA2100 — Infinity Stones',
-    price: 85,
+    price: 90,
     collection: 'GA2100 Showcase',
     description: 'Clean snow-white resin frame showcasing hand-painted vibrant rainbow hour indices inspired by cosmic power stones.',
     status: 'available',
@@ -78,7 +78,7 @@ export const INITIAL_PRODUCTS: Product[] = [
   {
     id: 'gw-4',
     name: 'Blue on Black GA2100 with Clear Strap — Blue Night',
-    price: 85,
+    price: 90,
     collection: 'GA2100 Showcase',
     description: 'Midnight blue indices set inside a deep black dial, paired with Sean’s signature translucent iced crystal strap.',
     status: 'available',
@@ -96,7 +96,7 @@ export const INITIAL_PRODUCTS: Product[] = [
   {
     id: 'gw-5',
     name: 'Rainbow on Black GA2100 — Night Sky',
-    price: 85,
+    price: 90,
     collection: 'GA2100 Showcase',
     description: 'Deep matte black backdrop with a radiant neon spectrum burst across all 12 indices like city lights in the Chicago night.',
     status: 'available',
@@ -114,7 +114,7 @@ export const INITIAL_PRODUCTS: Product[] = [
   {
     id: 'gw-6',
     name: 'Rose Gold on Black GA2100 — Gold Cap',
-    price: 85,
+    price: 90,
     collection: 'GA2100 Showcase',
     description: 'Understated luxury. Satin black resin housing with metallic rose gold dial markers and gold-dipped hands.',
     status: 'available',
@@ -132,7 +132,7 @@ export const INITIAL_PRODUCTS: Product[] = [
   {
     id: 'gw-7',
     name: 'Rainbow on White GA2100 with Clear Strap — Art Board',
-    price: 85,
+    price: 90,
     collection: 'GA2100 Showcase',
     description: 'Pure streetwear canvas. White dial with rainbow spectrum detailing and a full transparent skeleton jelly strap.',
     status: 'available',
@@ -150,7 +150,7 @@ export const INITIAL_PRODUCTS: Product[] = [
   {
     id: 'gw-8',
     name: 'Red on Red GA2100 — Blood Shot',
-    price: 85,
+    price: 90,
     collection: 'GA2100 Showcase',
     description: 'Unapologetic, head-turning crimson energy. Crimson red case, blood-red dial, and matching ruby strap.',
     status: 'available',
@@ -167,12 +167,12 @@ export const INITIAL_PRODUCTS: Product[] = [
   },
 
   // ---------------------------------------------------------------------------
-  // 2. CUSTOM COLLECTION ($100)
+  // 2. CUSTOM COLLECTION ($110)
   // ---------------------------------------------------------------------------
   {
     id: 'cc-1',
     name: 'White on White GA2100 — Who Cares, I’m Already Late',
-    price: 100,
+    price: 110,
     collection: 'Custom Collection',
     description: 'The iconic anti-establishment quote hand-lettered across the pristine white dial in custom comic typography. Pure attitude.',
     status: 'available',
@@ -190,7 +190,7 @@ export const INITIAL_PRODUCTS: Product[] = [
   {
     id: 'cc-2',
     name: 'Black on Black GA2100 — Who Cares, I’m Already Late',
-    price: 100,
+    price: 110,
     collection: 'Custom Collection',
     description: 'Stealth black dial with bold glossy ink lettering: "WHO CARES, I’M ALREADY LATE". A Chicago streetwear staple.',
     status: 'available',
@@ -208,7 +208,7 @@ export const INITIAL_PRODUCTS: Product[] = [
   {
     id: 'cc-3',
     name: 'Multicolor GA2100 — Bob Marley',
-    price: 100,
+    price: 110,
     collection: 'Custom Collection',
     description: 'Vibrant Rasta tribute featuring rich green, sunny yellow, and fiery red indices contrasted against an onyx black dial.',
     status: 'available',
@@ -225,12 +225,12 @@ export const INITIAL_PRODUCTS: Product[] = [
   },
 
   // ---------------------------------------------------------------------------
-  // 3. GA2100 AP BAND COLLECTION ($110)
+  // 3. GA2100 AP BAND COLLECTION ($125)
   // ---------------------------------------------------------------------------
   {
     id: 'ap-1',
     name: 'Black on Black Steel GA2100 — Black Out',
-    price: 110,
+    price: 125,
     collection: 'GA2100 AP Band Collection',
     description: 'Heavyweight brushed black stainless steel AP-style bezel and integrated link bracelet with butterfly deployant clasp.',
     status: 'available',
@@ -248,7 +248,7 @@ export const INITIAL_PRODUCTS: Product[] = [
   {
     id: 'ap-2',
     name: 'Rainbow on Grey AP Band GA2100 — Infinity Gauntlet',
-    price: 110,
+    price: 125,
     collection: 'GA2100 AP Band Collection',
     description: 'Silver gunmetal AP conversion case with rainbow spectrum hour indices and ergonomic textured rubber strap.',
     status: 'available',
@@ -266,7 +266,7 @@ export const INITIAL_PRODUCTS: Product[] = [
   {
     id: 'ap-3',
     name: 'Black and White AP Band GA2100 — Incognito',
-    price: 110,
+    price: 125,
     collection: 'GA2100 AP Band Collection',
     description: 'Two-tone luxury conversion. Satin black steel octagonal bezel, high-contrast white dial markers, and premium silicone AP strap.',
     status: 'available',
@@ -284,7 +284,7 @@ export const INITIAL_PRODUCTS: Product[] = [
   {
     id: 'ap-4',
     name: 'Grey Camo Steel AP Band GA2100 — Camo',
-    price: 110,
+    price: 125,
     collection: 'GA2100 AP Band Collection',
     description: 'Laser-etched urban camouflage pattern on gunmetal steel casing, paired with a reinforced tactical grey band.',
     status: 'available',

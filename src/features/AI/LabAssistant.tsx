@@ -54,16 +54,16 @@ export const LabAssistant: React.FC<LabAssistantProps> = ({
     if (q.includes('price') || q.includes('cost') || q.includes('how much')) {
       if (q.includes('custom') || q.includes('who cares') || q.includes('marley')) {
         return {
-          reply: 'The Custom Collection is $100 per watch (including "Who Cares, I’m Already Late" and "Bob Marley" multicolor).',
+          reply: 'The Custom Collection is $110 per watch (including "Who Cares, I’m Already Late" and "Bob Marley" multicolor).',
           actionDestination: 1,
-          actionLabel: 'View Custom Collection ($100)'
+          actionLabel: 'View Custom Collection ($110)'
         };
       }
       if (q.includes('ap') || q.includes('steel') || q.includes('band')) {
         return {
-          reply: 'The GA2100 AP Band Collection is $110 per watch. These feature 316L stainless steel AP-style bezels and integrated bracelets.',
+          reply: 'The GA2100 AP Band Collection is $125 per watch. These feature 316L stainless steel AP-style bezels and integrated bracelets.',
           actionDestination: 2,
-          actionLabel: 'View AP Band Collection ($110)'
+          actionLabel: 'View AP Band Collection ($125)'
         };
       }
       if (q.includes('sock') || q.includes('beanie')) {
@@ -74,9 +74,9 @@ export const LabAssistant: React.FC<LabAssistantProps> = ({
         };
       }
       return {
-        reply: 'Current pricing across our workshop:\n• Chapter 1: GA2100 Showcase: $85\n• Custom Collection: $100\n• AP Band Conversion: $110\n• All watches are eligible for a $20 deposit hold!',
+        reply: 'Current pricing across our workshop:\n• Chapter 1: GA2100 Showcase: $90\n• Custom Collection: $110\n• AP Band Conversion: $125\n• All watches are eligible for a $20 deposit hold!',
         actionDestination: 0,
-        actionLabel: 'Browse Showcase ($85)'
+        actionLabel: 'Browse Showcase ($90)'
       };
     }
 
@@ -123,7 +123,7 @@ export const LabAssistant: React.FC<LabAssistantProps> = ({
     // 6. Specific Models
     if (q.includes('rainbow') || q.includes('infinity') || q.includes('stones') || q.includes('blood shot') || q.includes('art board')) {
       return {
-        reply: 'Looking for a colorful build? The "Rainbow on White (Infinity Stones)", "Rainbow on Black (Night Sky)", and "Red on Red (Blood Shot)" are part of our GA2100 Showcase for $85!',
+        reply: 'Looking for a colorful build? The "Rainbow on White (Infinity Stones)", "Rainbow on Black (Night Sky)", and "Red on Red (Blood Shot)" are part of our GA2100 Showcase for $90!',
         actionDestination: 0,
         actionLabel: 'Explore Showcase Models'
       };
@@ -140,7 +140,7 @@ export const LabAssistant: React.FC<LabAssistantProps> = ({
 
     // Default Fallback
     return {
-      reply: 'I’m here to help with watches ($85-$110), deposit holds ($20 for 7 days), Chicago & NWI meet-ups, and warranties. You can also DM Sean directly on Instagram @seandidmywrist for custom 1-of-1 inquiries!',
+      reply: 'I’m here to help with watches ($90-$125), deposit holds ($20 for 7 days), Chicago & NWI meet-ups, and warranties. You can also DM Sean directly on Instagram @seandidmywrist for custom 1-of-1 inquiries!',
       actionDestination: 10,
       actionLabel: 'Contact Sean on Instagram'
     };

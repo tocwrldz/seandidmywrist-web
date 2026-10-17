@@ -38,7 +38,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigateToPage, onOpenAdmin })
                 onClick={() => onNavigateToPage(0)}
                 className="hover:text-red-600 hover:translate-x-1 transition-all cursor-pointer text-left"
               >
-                CH 1: GA2100 Showcase ($85)
+                CH 1: GA2100 Showcase ($90)
               </button>
             </li>
             <li>
@@ -46,7 +46,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigateToPage, onOpenAdmin })
                 onClick={() => onNavigateToPage(1)}
                 className="hover:text-red-600 hover:translate-x-1 transition-all cursor-pointer text-left"
               >
-                CH 1: Custom Collection ($100)
+                CH 1: Custom Collection ($110)
               </button>
             </li>
             <li>
@@ -54,7 +54,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigateToPage, onOpenAdmin })
                 onClick={() => onNavigateToPage(2)}
                 className="hover:text-red-600 hover:translate-x-1 transition-all cursor-pointer text-left"
               >
-                CH 1: AP Band Collection ($110)
+                CH 1: AP Band Collection ($125)
               </button>
             </li>
             <li>

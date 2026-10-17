@@ -125,7 +125,7 @@ export default function App() {
       return;
     }
     const orderId = 'SDMW-SIM-' + Math.floor(100000 + Math.random() * 900000);
-    const result = addWatchPunches(count, orderId, count * 85, `${count}x Simulated Custom Watch`);
+    const result = addWatchPunches(count, orderId, count * 90, `${count}x Simulated Custom Watch`);
     if (result) {
       setGhostModalData({
         isOpen: true,
@@ -185,27 +185,27 @@ export default function App() {
               className={`hover:text-red-600 transition-colors cursor-pointer ${
                 currentPage === 0 ? 'text-red-600 underline decoration-2' : ''
               }`}
-              title="Chapter 1: GA2100 Showcase ($85)"
+              title="Chapter 1: GA2100 Showcase ($90)"
             >
-              Showcase ($85)
+              Showcase ($90)
             </button>
             <button
               onClick={() => setCurrentPage(1)}
               className={`hover:text-red-600 transition-colors cursor-pointer ${
                 currentPage === 1 ? 'text-red-600 underline decoration-2' : ''
               }`}
-              title="Chapter 1: Custom Collection ($100)"
+              title="Chapter 1: Custom Collection ($110)"
             >
-              Custom ($100)
+              Custom ($110)
             </button>
             <button
               onClick={() => setCurrentPage(2)}
               className={`hover:text-red-600 transition-colors cursor-pointer ${
                 currentPage === 2 ? 'text-red-600 underline decoration-2' : ''
               }`}
-              title="Chapter 1: AP Band Collection ($110)"
+              title="Chapter 1: AP Band Collection ($125)"
             >
-              AP Band ($110)
+              AP Band ($125)
             </button>
 
             {/* Chapter 2: Cloths */}
