@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Product } from '../data/products';
+import { UserProfile } from './useAuth';
 
 export interface CartItem {
   product: Product;
@@ -7,7 +8,7 @@ export interface CartItem {
   isDepositReservation?: boolean;
 }
 
-export function useCart() {
+export function useCart(currentUser?: UserProfile | null) {
   const [cart, setCart] = useState<CartItem[]>(() => {
     try {
       const saved = localStorage.getItem('sdmw_cart_items');
@@ -91,23 +92,44 @@ export function useCart() {
     return acc + itemPrice * item.quantity;
   }, 0);
 
-  // Exact Discount Rules:
-  // 1. Any order above $125 is 10% off with code ONESTOPSHOP
-  // 2. Orders $85 and up include 5% discount
-  // 3. Orders less than $80 (and under $85) receive NO 5% discount ($0 discount)
+  // ANTI-STACKING DISCOUNT POLICY:
+  // "grant %5 upon sign up but don’t allow deal or coupon stacking"
+  // Rule 1: ONESTOPSHOP code gives 10% off for orders > $125.
+  // Rule 2: User with hasSignupBonus gets 5% off.
+  // Rule 3: Orders $85+ automatically get 5% off.
+  // CRITICAL ANTI-STACKING:
+  // - Only the SINGLE HIGHEST discount applies at any time. Discounts NEVER combine or sum up.
   const isOneStopShopActive = promoCode.trim().toUpperCase() === 'ONESTOPSHOP';
+  const hasSignup5Percent = !!currentUser?.hasSignupBonus;
+  const qualifiesForOrder85Deal = subtotal >= 85;
+
   let discountAmount = 0;
   let appliedDiscountName = '';
+  let stackingNotice = '';
 
   if (isOneStopShopActive && subtotal > 125) {
+    // 10% off overrides and supersedes any 5% deals (no stacking: 10% max)
     discountAmount = Math.round(subtotal * 0.10 * 100) / 100;
     appliedDiscountName = '10% OFF (Code: ONESTOPSHOP)';
-  } else if (subtotal >= 85) {
+    stackingNotice = 'Highest single deal applied: 10% OFF. (No stacking allowed with other deals or signup bonuses).';
+  } else if (hasSignup5Percent && qualifiesForOrder85Deal) {
+    // Both 5% signup bonus and $85+ promotion match, but strict NO STACKING: single 5% only (not 10%)
+    discountAmount = Math.round(subtotal * 0.05 * 100) / 100;
+    appliedDiscountName = '5% OFF (VIP Welcome & Orders $85+)';
+    stackingNotice = 'Strict anti-stacking: Deals do not combine. Single 5% discount applied.';
+  } else if (hasSignup5Percent) {
+    // Loyalty Sign-Up bonus grants 5% off any order regardless of size
+    discountAmount = Math.round(subtotal * 0.05 * 100) / 100;
+    appliedDiscountName = '5% OFF (VIP Member Sign-Up Bonus)';
+    stackingNotice = '5% Welcome bonus applied to your account. (Deal & coupon stacking prohibited).';
+  } else if (qualifiesForOrder85Deal) {
     discountAmount = Math.round(subtotal * 0.05 * 100) / 100;
     appliedDiscountName = '5% OFF (Orders $85+)';
+    stackingNotice = 'Volume order discount 5% applied. (Coupons do not stack).';
   } else {
     discountAmount = 0;
     appliedDiscountName = '';
+    stackingNotice = '';
   }
 
   const applyPromoCode = (code: string): { success: boolean; message: string } => {
@@ -115,12 +137,15 @@ export function useCart() {
     if (formatted === 'ONESTOPSHOP') {
       setPromoCode('ONESTOPSHOP');
       if (subtotal > 125) {
-        return { success: true, message: 'Code ONESTOPSHOP applied: 10% OFF your order!' };
+        return {
+          success: true,
+          message: 'Code ONESTOPSHOP applied: 10% OFF! (Replaces 5% bonus — no stacking allowed).'
+        };
       } else {
         const remaining = Math.max(0, 126 - subtotal);
         return {
           success: true,
-          message: `Code ONESTOPSHOP saved! Add $${remaining.toFixed(2)} more to reach $125 and activate 10% OFF.`
+          message: `Code ONESTOPSHOP saved! Add $${remaining.toFixed(2)} more to reach $125 for 10% OFF. (Coupons & deals do not stack).`
         };
       }
     }
@@ -143,11 +168,12 @@ export function useCart() {
     subtotal,
     discountAmount,
     appliedDiscountName,
+    stackingNotice,
     promoCode,
     applyPromoCode,
     removePromoCode,
     total,
     totalItemsCount,
-    isFirstOrder: subtotal >= 85 // Only true if order is $85 and up
+    isFirstOrder: subtotal >= 85 || hasSignup5Percent
   };
 }

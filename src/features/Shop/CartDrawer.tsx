@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { CartItem } from '../../hooks/useCart';
-import { X, Trash2, Plus, Minus, ShoppingBag, ArrowRight, ShieldCheck, Tag, Check, AlertCircle } from 'lucide-react';
+import { UserProfile } from '../../hooks/useAuth';
+import { X, Trash2, Plus, Minus, ShoppingBag, ArrowRight, ShieldCheck, Tag, Check, AlertCircle, Award, ShieldAlert } from 'lucide-react';
 
 interface CartDrawerProps {
   isOpen: boolean;
@@ -10,6 +11,7 @@ interface CartDrawerProps {
   subtotal: number;
   discountAmount: number;
   appliedDiscountName?: string;
+  stackingNotice?: string;
   total: number;
   promoCode?: string;
   onApplyPromoCode?: (code: string) => { success: boolean; message: string };
@@ -17,6 +19,8 @@ interface CartDrawerProps {
   onUpdateQuantity: (productId: string, delta: number, isDeposit?: boolean) => void;
   onRemoveItem: (productId: string, isDeposit?: boolean) => void;
   onProceedToCheckout: () => void;
+  currentUser?: UserProfile | null;
+  onOpenAuth?: () => void;
 }
 
 export const CartDrawer: React.FC<CartDrawerProps> = ({
@@ -26,13 +30,16 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
   subtotal,
   discountAmount,
   appliedDiscountName = '',
+  stackingNotice = '',
   total,
   promoCode = '',
   onApplyPromoCode,
   onRemovePromoCode,
   onUpdateQuantity,
   onRemoveItem,
-  onProceedToCheckout
+  onProceedToCheckout,
+  currentUser,
+  onOpenAuth
 }) => {
   const [inputCode, setInputCode] = useState('');
   const [promoMessage, setPromoMessage] = useState<{ text: string; isError: boolean } | null>(null);
@@ -85,7 +92,17 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
 
             {/* Offer Guidance Status Banner */}
             <div className="bg-yellow-300 border-b-3 border-black p-2.5 text-center text-xs font-bold text-black">
-              {subtotal >= 125 ? (
+              {currentUser?.hasSignupBonus ? (
+                <div className="flex items-center justify-center gap-1.5 flex-wrap">
+                  <Award size={14} className="text-black shrink-0" />
+                  <span>
+                    VIP ACCOUNT ({currentUser.name}): <strong className="underline">5% SIGN-UP BONUS ACTIVE</strong>!
+                  </span>
+                  <span className="text-[10px] bg-black text-yellow-300 px-1 py-0.2 font-mono">
+                    NO DEAL STACKING
+                  </span>
+                </div>
+              ) : subtotal >= 125 ? (
                 <p>
                   🎉 Order qualifies for <span className="underline font-black">10% OFF</span> with code <span className="bg-black text-white px-1.5 py-0.5 font-mono">ONESTOPSHOP</span>!
                 </p>
@@ -94,9 +111,17 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                   ✅ <span className="underline font-black">5% DISCOUNT APPLIED</span> on your order! (Add ${(126 - subtotal).toFixed(2)} more for 10% off with ONESTOPSHOP)
                 </p>
               ) : (
-                <p>
-                  💡 Orders $85+ get <span className="underline font-black">5% OFF</span>! Add ${(85 - subtotal).toFixed(2)} to unlock. (Orders under $80 do not receive 5% off)
-                </p>
+                <div className="flex items-center justify-center gap-2 flex-wrap">
+                  <span>💡 Get <strong>5% OFF</strong> this order upon signing up!</span>
+                  {onOpenAuth && (
+                    <button
+                      onClick={onOpenAuth}
+                      className="bg-black text-yellow-300 hover:bg-white hover:text-black px-2 py-0.5 text-[10px] font-black border border-black transition-colors cursor-pointer"
+                    >
+                      SIGN UP (GMAIL & PHONE)
+                    </button>
+                  )}
+                </div>
               )}
             </div>
 
@@ -237,15 +262,23 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
 
                   {discountAmount > 0 ? (
                     <div className="flex justify-between text-green-700">
-                      <span>DISCOUNT ({appliedDiscountName || '5% off $85+'}):</span>
+                      <span>DISCOUNT ({appliedDiscountName || '5% off'}):</span>
                       <span className="font-mono text-sm">-${discountAmount.toFixed(2)}</span>
                     </div>
                   ) : (
                     <div className="flex justify-between text-gray-400 text-[11px]">
-                      <span>DISCOUNT (Orders $85+):</span>
+                      <span>DISCOUNT:</span>
                       <span>$0.00</span>
                     </div>
                   )}
+
+                  {/* Anti-Stacking Policy Note */}
+                  <div className="bg-yellow-50 border border-black p-1.5 text-[10px] text-gray-800 font-bold flex items-center gap-1.5">
+                    <ShieldAlert size={14} className="text-black shrink-0" />
+                    <span>
+                      {stackingNotice || 'Policy: Deals & coupons do not stack. Single highest discount applies.'}
+                    </span>
+                  </div>
 
                   <div className="flex justify-between text-gray-700">
                     <span>ESTIMATED SHIPPING:</span>

@@ -60,30 +60,62 @@ export const LoyaltyPunchCard: React.FC<LoyaltyPunchCardProps> = ({
           <div className="absolute -right-4 top-1/2 -translate-y-1/2 w-8 h-8 bg-[#f3f4f6] rounded-full border-4 border-black" />
 
           {/* Account status header strip */}
-          <div className="relative z-10 flex items-center justify-between bg-black text-yellow-300 px-3 py-1.5 border-2 border-black mb-3 text-xs font-bold">
-            <div className="flex items-center gap-1.5">
-              <User size={14} className="text-yellow-300" />
+          <div className="relative z-10 flex flex-wrap items-center justify-between gap-2 bg-black text-yellow-300 px-3 py-1.5 border-2 border-black mb-3 text-xs font-bold">
+            <div className="flex items-center gap-1.5 flex-wrap">
+              <User size={14} className="text-yellow-300 shrink-0" />
               <span>
                 {currentUser ? (
-                  <>VIP ACCOUNT: <strong className="text-white underline">{currentUser.name}</strong></>
+                  <>
+                    VIP: <strong className="text-white underline">{currentUser.name}</strong> •{' '}
+                    <span className="text-gray-300 font-mono text-[11px]">{currentUser.email}</span>
+                    {currentUser.phone && (
+                      <span className="text-yellow-400 font-mono text-[11px] ml-1">
+                        ({currentUser.phone})
+                      </span>
+                    )}
+                  </>
                 ) : (
-                  <>GUEST MODE (POINTS NOT SAVED)</>
+                  <>GUEST MODE (NO LOYALTY CARD ATTACHED)</>
                 )}
               </span>
             </div>
             {currentUser ? (
-              <span className="text-[10px] text-gray-300 font-mono">
-                {currentUser.totalWatchesPurchased} WATCHES LOGGED
-              </span>
+              <div className="flex items-center gap-2">
+                {currentUser.hasSignupBonus && (
+                  <span className="bg-yellow-300 text-black px-1.5 py-0.2 text-[10px] font-black border border-black animate-pulse">
+                    5% BONUS ACTIVE
+                  </span>
+                )}
+                <span className="text-[10px] text-gray-300 font-mono">
+                  {currentUser.totalWatchesPurchased} WATCHES LOGGED
+                </span>
+              </div>
             ) : (
               <button
                 onClick={onOpenAuth}
-                className="bg-yellow-300 text-black px-2 py-0.5 text-[10px] font-black hover:bg-white cursor-pointer"
+                className="bg-yellow-300 text-black px-2.5 py-1 text-xs font-black hover:bg-white border border-black cursor-pointer shadow-[2px_2px_0px_#fff]"
               >
-                LOG IN TO SAVE POINTS
+                ★ SIGN UP WITH GMAIL & PHONE (GET 5% OFF)
               </button>
             )}
           </div>
+
+          {!currentUser && (
+            <div className="bg-yellow-300 border-3 border-black p-2.5 mb-3 text-center text-xs font-black text-black shadow-[3px_3px_0px_#000] relative z-10 flex flex-col sm:flex-row items-center justify-between gap-2">
+              <div className="text-left">
+                <span className="bg-black text-yellow-300 px-1 py-0.5 mr-1 font-mono text-[10px]">
+                  NEW MEMBER BONUS
+                </span>
+                <span>Sign up with your Phone & Gmail to lock in 5% off + save your punches!</span>
+              </div>
+              <button
+                onClick={onOpenAuth}
+                className="shrink-0 bg-black text-yellow-300 hover:bg-white hover:text-black px-3 py-1 text-xs font-black border-2 border-black cursor-pointer transition-colors"
+              >
+                SIGN UP (CLAIM 5%)
+              </button>
+            </div>
+          )}
 
           {/* Header */}
           <div className="text-center border-b-4 border-black pb-3 mb-4 relative z-10 flex flex-col items-center">

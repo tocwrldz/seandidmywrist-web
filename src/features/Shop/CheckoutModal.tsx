@@ -13,6 +13,8 @@ interface CheckoutModalProps {
   cart: CartItem[];
   subtotal: number;
   discountAmount: number;
+  appliedDiscountName?: string;
+  stackingNotice?: string;
   onClearCart: () => void;
   currentUser?: UserProfile | null;
   onWatchPurchaseSuccess?: (watchCount: number, orderId: string, grandTotal: number, summary: string) => void;
@@ -28,6 +30,8 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
   cart,
   subtotal,
   discountAmount,
+  appliedDiscountName = '',
+  stackingNotice = '',
   onClearCart,
   currentUser,
   onWatchPurchaseSuccess,
@@ -51,6 +55,14 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
   const [orderId, setOrderId] = useState('');
   const [errorMsg, setErrorMsg] = useState('');
   const [isProcessing, setIsProcessing] = useState(false);
+
+  React.useEffect(() => {
+    if (currentUser) {
+      if (!name) setName(currentUser.name);
+      if (!email) setEmail(currentUser.email);
+      if (!phone && currentUser.phone) setPhone(currentUser.phone);
+    }
+  }, [currentUser]);
 
   if (!isOpen) return null;
 
@@ -158,6 +170,27 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
           {/* STEP 1: INFO & SHIPPING */}
           {step === 'info' && (
             <form onSubmit={handleNextToPayment} className="space-y-4">
+              {!currentUser && onOpenAuth && (
+                <div className="bg-yellow-300 border-3 border-black p-3 flex flex-col sm:flex-row items-center justify-between gap-2.5 shadow-[3px_3px_0px_#000]">
+                  <div className="text-xs font-bold text-black text-center sm:text-left">
+                    <span className="font-black bg-black text-yellow-300 px-1.5 py-0.5 comic-font text-xs mr-1.5 inline-block">
+                      VIP BONUS
+                    </span>
+                    Sign up with your <strong>Gmail & Phone</strong> to lock in <strong>5% OFF</strong> this order!
+                    <span className="block text-[10px] text-gray-700 font-mono mt-0.5">
+                      No deal stacking • 5 watch purchases = 1 FREE watch
+                    </span>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={onOpenAuth}
+                    className="shrink-0 bg-black text-yellow-300 hover:bg-white hover:text-black text-xs font-black px-3 py-1.5 border-2 border-black cursor-pointer transition-colors"
+                  >
+                    SIGN UP (GET 5% OFF)
+                  </button>
+                </div>
+              )}
+
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <label className="block comic-font text-lg text-black mb-1">
@@ -304,17 +337,24 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
               )}
 
               {/* Order Breakdown Box */}
-              <div className="bg-yellow-50 border-3 border-black p-3 space-y-1 text-xs font-bold">
+              <div className="bg-yellow-50 border-3 border-black p-3 space-y-1.5 text-xs font-bold">
                 <div className="flex justify-between">
                   <span>Subtotal ({cart.length} items):</span>
                   <span>${subtotal.toFixed(2)}</span>
                 </div>
                 {discountAmount > 0 && (
                   <div className="flex justify-between text-green-700">
-                    <span>First Order Discount (5%):</span>
+                    <span>{appliedDiscountName || 'Discount (5%)'}:</span>
                     <span>-${discountAmount.toFixed(2)}</span>
                   </div>
                 )}
+
+                {/* Anti-stacking Notice */}
+                <div className="bg-white border border-black p-1 text-[10px] text-gray-700 font-bold flex items-center gap-1.5">
+                  <ShieldAlert size={12} className="text-black shrink-0" />
+                  <span>{stackingNotice || 'Policy: Deals & coupons do not stack. Single highest discount applies.'}</span>
+                </div>
+
                 <div className="flex justify-between">
                   <span>Delivery ({selectedShipping.name}):</span>
                   <span>{shippingFee === 0 ? 'FREE' : `$${shippingFee.toFixed(2)}`}</span>

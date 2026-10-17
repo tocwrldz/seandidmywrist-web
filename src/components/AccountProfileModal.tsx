@@ -62,9 +62,18 @@ export const AccountProfileModal: React.FC<AccountProfileModalProps> = ({
                   VIP MEMBER
                 </span>
               </div>
-              <p className="text-xs font-bold text-gray-600 mt-1">
-                {currentUser.email} {currentUser.instagram && `• ${currentUser.instagram}`}
+              <p className="text-xs font-bold text-gray-700 mt-1 flex flex-wrap items-center gap-1.5">
+                <span className="text-black font-mono">Gmail: {currentUser.email}</span>
+                {currentUser.phone && (
+                  <span className="text-black font-mono">• Phone: {currentUser.phone}</span>
+                )}
+                {currentUser.instagram && <span>• {currentUser.instagram}</span>}
               </p>
+              {currentUser.hasSignupBonus && (
+                <div className="mt-2 inline-flex items-center gap-1.5 bg-yellow-300 text-black border-2 border-black px-2.5 py-0.5 text-xs font-black shadow-[2px_2px_0px_#000]">
+                  <span>🎉 5% WELCOME SIGN-UP BONUS ACTIVE (No Deal Stacking)</span>
+                </div>
+              )}
             </div>
           </div>
 

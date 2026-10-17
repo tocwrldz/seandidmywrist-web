@@ -17,17 +17,17 @@ export const PromoBanner: React.FC = () => {
       >
         <div className="max-w-6xl mx-auto flex flex-wrap items-center justify-center gap-2 pr-6 text-xs md:text-sm">
           <Sparkles size={16} className="text-yellow-400 shrink-0 animate-pulse" />
-          <span className="comic-font tracking-wider text-white">
-            5% OFF ORDERS $85+
+          <span className="comic-font tracking-wider text-yellow-300">
+            SIGN UP WITH GMAIL & PHONE = 5% OFF
           </span>
           <span className="text-yellow-400 font-bold">•</span>
-          <span className="comic-font tracking-wider text-yellow-300">
+          <span className="comic-font tracking-wider text-white">
             10% OFF ORDERS $125+ WITH CODE: <span className="bg-yellow-300 text-black px-1 py-0.5 border border-black font-mono font-bold">ONESTOPSHOP</span>
           </span>
           <span className="text-yellow-400 font-bold hidden sm:inline">•</span>
           <span className="hidden sm:inline-flex items-center gap-1 text-red-400 font-bold">
             <Gift size={13} className="text-red-400" />
-            LOYALTY PUNCH CARD: 5 PUNCHES = 1 FREE WATCH!
+            5 PUNCHES = 1 FREE WATCH! (NO DEAL STACKING)
           </span>
         </div>
         <button

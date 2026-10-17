@@ -45,22 +45,6 @@ export default function App() {
   });
 
   const {
-    cart,
-    addToCart,
-    removeFromCart,
-    updateQuantity,
-    clearCart,
-    subtotal,
-    discountAmount,
-    appliedDiscountName,
-    promoCode,
-    applyPromoCode,
-    removePromoCode,
-    total,
-    totalItemsCount
-  } = useCart();
-
-  const {
     currentUser,
     users,
     signUp,
@@ -71,6 +55,23 @@ export default function App() {
     redeemFreeWatch,
     resetUserPunches
   } = useAuth();
+
+  const {
+    cart,
+    addToCart,
+    removeFromCart,
+    updateQuantity,
+    clearCart,
+    subtotal,
+    discountAmount,
+    appliedDiscountName,
+    stackingNotice,
+    promoCode,
+    applyPromoCode,
+    removePromoCode,
+    total,
+    totalItemsCount
+  } = useCart(currentUser);
 
   const activePunches = currentUser ? currentUser.loyaltyPunches : 0;
   const activeFreeWatches = currentUser ? currentUser.freeWatchesEarned : 0;
@@ -273,17 +274,22 @@ export default function App() {
                 <span className="bg-black text-yellow-300 text-[10px] font-black px-1.5 py-0.2 rounded-full">
                   {currentUser.loyaltyPunches}/5 🎟️
                 </span>
+                {currentUser.hasSignupBonus && (
+                  <span className="hidden lg:inline bg-red-600 text-white text-[9px] font-black px-1 py-0.2 border border-black uppercase">
+                    5% BONUS
+                  </span>
+                )}
               </button>
             ) : (
               <button
                 onClick={() => setIsAuthOpen(true)}
                 className="flex items-center gap-1.5 bg-black hover:bg-yellow-400 hover:text-black text-yellow-300 border-2 border-black px-2.5 py-1.5 text-xs font-bold transition-colors cursor-pointer shadow-[2px_2px_0px_#000]"
-                title="Sign In or Create Account to earn loyalty points on watch purchases!"
+                title="Sign Up with Gmail & Phone for your VIP Loyalty Card + 5% OFF!"
               >
                 <User size={14} />
-                <span className="hidden sm:inline">JOIN VIP</span>
-                <span className="text-[10px] bg-yellow-300 text-black px-1 font-black rounded-full">
-                  5=FREE
+                <span className="font-black">SIGN UP</span>
+                <span className="text-[10px] bg-yellow-300 text-black px-1.5 py-0.2 font-black rounded-full">
+                  5% OFF
                 </span>
               </button>
             )}
@@ -365,12 +371,15 @@ export default function App() {
         subtotal={subtotal}
         discountAmount={discountAmount}
         appliedDiscountName={appliedDiscountName}
+        stackingNotice={stackingNotice}
         total={total}
         promoCode={promoCode}
         onApplyPromoCode={applyPromoCode}
         onRemovePromoCode={removePromoCode}
         onUpdateQuantity={updateQuantity}
         onRemoveItem={removeFromCart}
+        currentUser={currentUser}
+        onOpenAuth={() => setIsAuthOpen(true)}
         onProceedToCheckout={() => {
           setIsCartOpen(false);
           setIsCheckoutOpen(true);
@@ -384,6 +393,8 @@ export default function App() {
         cart={cart}
         subtotal={subtotal}
         discountAmount={discountAmount}
+        appliedDiscountName={appliedDiscountName}
+        stackingNotice={stackingNotice}
         onClearCart={clearCart}
         currentUser={currentUser}
         onWatchPurchaseSuccess={handleWatchPurchaseSuccess}
@@ -420,7 +431,7 @@ export default function App() {
         onRedeemReward={redeemFreeWatch}
       />
 
-      {/* Auth Modal (Sign Up, Log In, 1-Click Demo Profiles) */}
+      {/* Auth Modal (VIP Loyalty Card Sign Up with Gmail & Phone, 5% Bonus) */}
       <AuthModal
         isOpen={isAuthOpen}
         onClose={() => setIsAuthOpen(false)}
@@ -428,6 +439,10 @@ export default function App() {
         onSignIn={signIn}
         onLoginDemo={loginAsDemo}
         users={users}
+        initialTab="signup"
+        onAccountCreated={() => {
+          setIsLoyaltyOpen(true);
+        }}
       />
 
       {/* Account Profile & Rewards Ledger Modal */}

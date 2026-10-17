@@ -13,30 +13,34 @@ export interface UserOrder {
 export interface UserProfile {
   id: string;
   email: string;
+  phone: string;
   name: string;
   instagram?: string;
   createdAt: string;
-  loyaltyPunches: number; // 0 to 10
+  loyaltyPunches: number; // 0 to 5
   totalWatchesPurchased: number;
   freeWatchesEarned: number;
   orderHistory: UserOrder[];
+  hasSignupBonus: boolean; // Grants 5% upon sign up (No coupon stacking)
 }
 
-const STORAGE_USERS_KEY = 'sdmw_users_v2';
-const STORAGE_CURRENT_USER_KEY = 'sdmw_active_user_v2';
+const STORAGE_USERS_KEY = 'sdmw_users_v3';
+const STORAGE_CURRENT_USER_KEY = 'sdmw_active_user_v3';
 const MAX_PUNCHES = 5;
 
-// Preloaded Demo Accounts for easy testing on mobile or desktop
+// Preloaded Demo Accounts with Gmail and Phone for easy mobile testing
 const INITIAL_DEMO_USERS: UserProfile[] = [
   {
     id: 'usr_sean_vip',
-    email: 'sean@seandidmywrist.com',
+    email: 'sean.chicago.customs@gmail.com',
+    phone: '(312) 555-0192',
     name: 'Sean (VIP Member)',
     instagram: '@seandidmywrist',
     createdAt: '2026-01-15',
-    loyaltyPunches: 3, // 3 punches collected out of 5, 2 away from free watch!
+    loyaltyPunches: 3, // 3 punches collected out of 5
     totalWatchesPurchased: 8,
     freeWatchesEarned: 1,
+    hasSignupBonus: true,
     orderHistory: [
       {
         id: 'SDMW-781920',
@@ -60,13 +64,15 @@ const INITIAL_DEMO_USERS: UserProfile[] = [
   },
   {
     id: 'usr_alex_drip',
-    email: 'alex@chicago.com',
+    email: 'alex.wristcheck@gmail.com',
+    phone: '(773) 555-0144',
     name: 'Alex Drip',
     instagram: '@alex_wristcheck',
     createdAt: '2026-02-01',
-    loyaltyPunches: 4, // 4 punches out of 5 - 1 watch away from free watch!
+    loyaltyPunches: 4, // 4 punches out of 5
     totalWatchesPurchased: 4,
     freeWatchesEarned: 0,
+    hasSignupBonus: true,
     orderHistory: [
       {
         id: 'SDMW-629104',
@@ -140,43 +146,73 @@ export function useAuth() {
   }, []);
 
   const signUp = useCallback(
-    (name: string, email: string, instagram?: string): UserProfile => {
-      const existing = users.find((u) => u.email.toLowerCase() === email.toLowerCase());
+    (name: string, email: string, phone: string, instagram?: string): UserProfile => {
+      const cleanEmail = email.trim().toLowerCase();
+      const cleanPhone = phone.trim();
+      const existing = users.find(
+        (u) =>
+          u.email.toLowerCase() === cleanEmail ||
+          (cleanPhone && u.phone && u.phone.replace(/\D/g, '') === cleanPhone.replace(/\D/g, ''))
+      );
+
       if (existing) {
-        setCurrentUser(existing);
-        return existing;
+        const updated = {
+          ...existing,
+          phone: existing.phone || cleanPhone,
+          hasSignupBonus: true
+        };
+        saveUpdatedUser(updated);
+        return updated;
       }
 
       const newUser: UserProfile = {
         id: 'usr_' + Date.now(),
         email: email.trim(),
+        phone: cleanPhone || '(312) 555-0199',
         name: name.trim() || 'VIP Collector',
         instagram: instagram?.trim() || '',
         createdAt: new Date().toISOString().split('T')[0],
         loyaltyPunches: 0,
         totalWatchesPurchased: 0,
         freeWatchesEarned: 0,
-        orderHistory: []
+        orderHistory: [],
+        hasSignupBonus: true // 5% upon sign up granted!
       };
 
       setUsers((prev) => [newUser, ...prev]);
       setCurrentUser(newUser);
       return newUser;
     },
-    [users]
+    [users, saveUpdatedUser]
   );
 
   const signIn = useCallback(
-    (email: string): boolean => {
-      const found = users.find((u) => u.email.toLowerCase() === email.toLowerCase().trim());
+    (identifier: string): boolean => {
+      const trimmed = identifier.trim().toLowerCase();
+      const digitsOnly = identifier.replace(/\D/g, '');
+
+      const found = users.find((u) => {
+        if (u.email.toLowerCase() === trimmed) return true;
+        if (digitsOnly && digitsOnly.length >= 7 && u.phone) {
+          const userDigits = u.phone.replace(/\D/g, '');
+          if (userDigits === digitsOnly || userDigits.endsWith(digitsOnly)) return true;
+        }
+        return false;
+      });
+
       if (found) {
         setCurrentUser(found);
         return true;
       }
-      // If account doesn't exist yet, auto-create for seamless UX
-      const autoUser = signUp(email.split('@')[0], email);
-      setCurrentUser(autoUser);
-      return true;
+
+      // If identifier looks like a Gmail/email address, create and sign in
+      if (trimmed.includes('@')) {
+        const autoUser = signUp(trimmed.split('@')[0], trimmed, '');
+        setCurrentUser(autoUser);
+        return true;
+      }
+
+      return false;
     },
     [users, signUp]
   );
