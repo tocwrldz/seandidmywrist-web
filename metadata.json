@@ -1,0 +1,6 @@
+{
+  "name": "SeanDidMyWrist — Comic-Book Custom G-Shock Lab",
+  "description": "Premium streetwear meets black-and-white comic book. Custom G-Shock GA2100 CasiOak watches, streetwear, deposits, and Chicago & NWI meet-ups.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
