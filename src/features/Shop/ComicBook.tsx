@@ -61,24 +61,32 @@ export const ComicBook: React.FC<ComicBookProps> = ({
 
   const totalPages = COMIC_PAGES.length;
 
-  const goToNextPage = () => {
+  const goToNextPage = (e?: React.MouseEvent) => {
+    e?.preventDefault();
+    e?.stopPropagation();
     if (currentPage < totalPages - 1) {
       setDirection('next');
       onPageChange(currentPage + 1);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   };
 
-  const goToPrevPage = () => {
+  const goToPrevPage = (e?: React.MouseEvent) => {
+    e?.preventDefault();
+    e?.stopPropagation();
     if (currentPage > 0) {
       setDirection('prev');
       onPageChange(currentPage - 1);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   };
 
   const jumpToPage = (index: number) => {
-    setDirection(index > currentPage ? 'next' : 'prev');
-    onPageChange(index);
+    const safeIdx = Math.max(0, Math.min(index, totalPages - 1));
+    setDirection(safeIdx > currentPage ? 'next' : 'prev');
+    onPageChange(safeIdx);
     setShowIndex(false);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   // Mobile Touch Swipe Handling
@@ -173,9 +181,21 @@ export const ComicBook: React.FC<ComicBookProps> = ({
             <span className="hidden sm:inline">PREV</span>
           </button>
 
-          <span className="comic-font text-sm md:text-lg px-2.5 whitespace-nowrap">
-            PAGE {currentPage + 1} OF {totalPages}
-          </span>
+          {/* Quick Select Dropdown for direct one-tap jump on phones */}
+          <div className="flex items-center px-1">
+            <select
+              value={currentPage}
+              onChange={(e) => jumpToPage(Number(e.target.value))}
+              className="comic-font text-sm md:text-base bg-white border border-black px-1.5 py-0.5 focus:outline-none cursor-pointer text-black"
+              aria-label="Select comic page"
+            >
+              {COMIC_PAGES.map((p, idx) => (
+                <option key={p.id} value={idx} className="font-sans font-bold text-xs text-black bg-white">
+                  Page {idx + 1}: {p.title}
+                </option>
+              ))}
+            </select>
+          </div>
 
           <button
             onClick={goToNextPage}
