@@ -57,6 +57,7 @@ export const ComicBook: React.FC<ComicBookProps> = ({
   const [showIndex, setShowIndex] = useState(false);
   const [direction, setDirection] = useState<'next' | 'prev'>('next');
   const [reducedMotion, setReducedMotion] = useState(false);
+  const [touchStartX, setTouchStartX] = useState<number | null>(null);
 
   const totalPages = COMIC_PAGES.length;
 
@@ -80,10 +81,28 @@ export const ComicBook: React.FC<ComicBookProps> = ({
     setShowIndex(false);
   };
 
+  // Mobile Touch Swipe Handling
+  const handleTouchStart = (e: React.TouchEvent) => {
+    setTouchStartX(e.touches[0].clientX);
+  };
+
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    if (touchStartX === null) return;
+    const touchEndX = e.changedTouches[0].clientX;
+    const diff = touchStartX - touchEndX;
+    if (diff > 45) {
+      // Swiped left -> next page
+      goToNextPage();
+    } else if (diff < -45) {
+      // Swiped right -> prev page
+      goToPrevPage();
+    }
+    setTouchStartX(null);
+  };
+
   // Keyboard navigation
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      // Avoid intercepting inside inputs
       if (['INPUT', 'TEXTAREA', 'SELECT'].includes((e.target as HTMLElement).tagName)) {
         return;
       }
@@ -104,54 +123,76 @@ export const ComicBook: React.FC<ComicBookProps> = ({
   // Motion variants for comic book page flip
   const pageVariants = {
     enter: (dir: string) => ({
-      x: reducedMotion ? 0 : dir === 'next' ? 60 : -60,
-      opacity: 0,
-      scale: reducedMotion ? 1 : 0.98
+      x: reducedMotion ? 0 : dir === 'next' ? 40 : -40,
+      opacity: 0
     }),
     center: {
       x: 0,
       opacity: 1,
-      scale: 1,
       transition: {
-        duration: reducedMotion ? 0.05 : 0.28,
+        duration: reducedMotion ? 0.05 : 0.22,
         ease: 'easeOut' as const
       }
     },
     exit: (dir: string) => ({
-      x: reducedMotion ? 0 : dir === 'next' ? -60 : 60,
+      x: reducedMotion ? 0 : dir === 'next' ? -40 : 40,
       opacity: 0,
-      scale: reducedMotion ? 1 : 0.98,
       transition: {
-        duration: reducedMotion ? 0.05 : 0.2
+        duration: reducedMotion ? 0.05 : 0.15
       }
     })
   };
 
   return (
-    <div className="w-full max-w-6xl mx-auto px-4 py-6 select-none">
-      {/* COMIC MASTHEAD & NAVIGATION TOOLBAR */}
-      <div className="ink-panel bg-white p-3 md:p-4 mb-6 flex flex-wrap items-center justify-between gap-3">
-        {/* Contents Index Trigger */}
+    <div className="w-full max-w-6xl mx-auto px-4 py-4 md:py-6 select-none">
+      {/* COMIC MASTHEAD & NAVIGATION TOOLBAR (Top Bar with immediate controls) */}
+      <div className="ink-panel bg-white p-3 md:p-4 mb-4 flex flex-wrap items-center justify-between gap-3 sticky top-[72px] z-30 shadow-[4px_4px_0px_#000]">
+        {/* Left: Contents Index Trigger */}
         <button
           onClick={() => setShowIndex(true)}
-          className="ink-btn bg-yellow-300 hover:bg-yellow-400 text-black px-4 py-2 text-sm md:text-base flex items-center gap-2 cursor-pointer transition-colors"
+          className="ink-btn bg-yellow-300 hover:bg-yellow-400 text-black px-3.5 py-2 text-xs md:text-sm flex items-center gap-1.5 cursor-pointer transition-colors"
           aria-label="Open Comic Index"
         >
-          <List size={18} />
-          <span>COMIC INDEX ({totalPages} PAGES)</span>
+          <List size={16} />
+          <span>INDEX ({totalPages} PAGES)</span>
         </button>
 
-        {/* Current Chapter Ribbon */}
-        <div className="hidden lg:flex items-center gap-2">
-          <span className="comic-font text-xs bg-black text-white px-2 py-0.5 -rotate-1">
-            ISSUE #1
+        {/* Center: TOP QUICK PAGE FLIPPER (Always accessible on mobile without scrolling!) */}
+        <div className="flex items-center gap-1 bg-yellow-300 border-3 border-black p-1 shadow-[3px_3px_0px_#000]">
+          <button
+            onClick={goToPrevPage}
+            disabled={currentPage === 0}
+            className={`p-1.5 font-black border-2 border-black flex items-center gap-1 text-xs transition-colors cursor-pointer ${
+              currentPage === 0
+                ? 'opacity-30 border-gray-400 bg-gray-100 cursor-not-allowed'
+                : 'bg-white hover:bg-black hover:text-white'
+            }`}
+            aria-label="Previous Page"
+          >
+            <ChevronLeft size={16} />
+            <span className="hidden sm:inline">PREV</span>
+          </button>
+
+          <span className="comic-font text-sm md:text-lg px-2.5 whitespace-nowrap">
+            PAGE {currentPage + 1} OF {totalPages}
           </span>
-          <span className="comic-font text-xl text-black">
-            PAGE {currentPage + 1}: {activePageMeta.title.toUpperCase()}
-          </span>
+
+          <button
+            onClick={goToNextPage}
+            disabled={currentPage === totalPages - 1}
+            className={`p-1.5 font-black border-2 border-black flex items-center gap-1 text-xs transition-colors cursor-pointer ${
+              currentPage === totalPages - 1
+                ? 'opacity-30 border-gray-400 bg-gray-100 cursor-not-allowed'
+                : 'bg-black text-white hover:bg-yellow-400 hover:text-black'
+            }`}
+            aria-label="Next Page"
+          >
+            <span className="hidden sm:inline">NEXT</span>
+            <ChevronRight size={16} />
+          </button>
         </div>
 
-        {/* Quick Cart & Accessibility Controls */}
+        {/* Right: Quick Cart & Accessibility Controls */}
         <div className="flex items-center gap-2">
           {/* Reduced Motion Toggle */}
           <button
@@ -159,7 +200,7 @@ export const ComicBook: React.FC<ComicBookProps> = ({
             className={`p-2 border-2 border-black transition-colors text-xs font-bold cursor-pointer ${
               reducedMotion ? 'bg-black text-white' : 'bg-gray-100 text-black hover:bg-gray-200'
             }`}
-            title={reducedMotion ? 'Turn page animations back ON' : 'Turn page animations OFF (Reduced Motion)'}
+            title={reducedMotion ? 'Page animations OFF (Reduced Motion)' : 'Page animations ON'}
             aria-label="Toggle reduced motion"
           >
             <Sliders size={16} />
@@ -168,13 +209,13 @@ export const ComicBook: React.FC<ComicBookProps> = ({
           {/* Cart Trigger */}
           <button
             onClick={onOpenCart}
-            className="ink-btn bg-black hover:bg-yellow-400 hover:text-black text-white px-4 py-2 text-sm md:text-base flex items-center gap-2 cursor-pointer transition-colors relative"
+            className="ink-btn bg-black hover:bg-yellow-400 hover:text-black text-white px-3.5 py-2 text-xs md:text-sm flex items-center gap-1.5 cursor-pointer transition-colors relative"
             aria-label={`Open shopping cart with ${cartCount} items`}
           >
-            <ShoppingBag size={18} />
-            <span>MY HAUL</span>
+            <ShoppingBag size={16} />
+            <span>HAUL</span>
             {cartCount > 0 && (
-              <span className="bg-yellow-400 text-black comic-font text-sm px-2 py-0.2 border border-black rounded-full">
+              <span className="bg-yellow-400 text-black comic-font text-xs px-1.5 py-0.2 border border-black rounded-full">
                 {cartCount}
               </span>
             )}
@@ -240,13 +281,17 @@ export const ComicBook: React.FC<ComicBookProps> = ({
         )}
       </AnimatePresence>
 
-      {/* MAIN COMIC BOOK SPREAD CONTAINER */}
-      <div className="relative min-h-[600px] bg-white border-6 md:border-8 border-black shadow-[10px_10px_0px_#000] p-4 md:p-8 overflow-hidden">
+      {/* MAIN COMIC BOOK SPREAD CONTAINER (with Mobile Touch Swipe) */}
+      <div
+        onTouchStart={handleTouchStart}
+        onTouchEnd={handleTouchEnd}
+        className="relative min-h-[500px] bg-white border-6 md:border-8 border-black shadow-[10px_10px_0px_#000] p-4 md:p-8 overflow-hidden touch-pan-y"
+      >
         {/* Halftone subtle dots across the paper page */}
         <div className="absolute inset-0 halftone opacity-8 pointer-events-none" />
 
         {/* Comic Page Turn Animator */}
-        <AnimatePresence custom={direction} mode="wait">
+        <AnimatePresence custom={direction} initial={false}>
           <motion.div
             key={currentPage}
             custom={direction}

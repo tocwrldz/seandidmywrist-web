@@ -22,7 +22,7 @@ export default function App() {
   const [isCartOpen, setIsCartOpen] = useState<boolean>(false);
   const [isCheckoutOpen, setIsCheckoutOpen] = useState<boolean>(false);
   const [isAdminOpen, setIsAdminOpen] = useState<boolean>(false);
-  const [currentPage, setCurrentPage] = useState<number>(4); // Defaults to GA2100 Showcase
+  const [currentPage, setCurrentPage] = useState<number>(0); // Starts on Page 1: Why Shop With Sean
 
   const {
     cart,
@@ -64,7 +64,7 @@ export default function App() {
         <OpeningScreen
           onEnterShop={() => {
             setHasEntered(true);
-            setCurrentPage(4); // Land right on GA2100 Showcase
+            setCurrentPage(0); // Starts on Page 1
           }}
         />
       )}

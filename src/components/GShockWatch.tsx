@@ -263,62 +263,73 @@ export const GShockWatch: React.FC<GShockWatchProps> = ({
           WR 20BAR
         </text>
 
-        {/* CENTER PIVOT */}
-        <circle cx="100" cy="130" r="4.5" fill="#000000" stroke="#FFFFFF" strokeWidth="1.5" />
+        {/* CENTER PIVOT & ROTATING HANDS */}
+        <g transform="translate(100, 130)">
+          {/* Base Center Pin */}
+          <circle cx="0" cy="0" r="4.5" fill="#000000" stroke="#FFFFFF" strokeWidth="1.5" />
 
-        {/* WORKING HANDS (Animated around 12:00 center in infinite loop) */}
-        {animateHands ? (
-          <>
-            {/* Hour Hand */}
-            <motion.line
-              x1="100"
-              y1="130"
-              x2="100"
-              y2="105"
-              stroke="#FFFFFF"
-              strokeWidth="4"
-              strokeLinecap="round"
-              style={{ originX: '100px', originY: '130px' }}
-              animate={{ rotate: 360 }}
-              transition={{ duration: 18, repeat: Infinity, ease: 'linear' }}
-            />
-            {/* Minute Hand */}
-            <motion.line
-              x1="100"
-              y1="130"
-              x2="100"
-              y2="94"
-              stroke="#FFFFFF"
-              strokeWidth="2.5"
-              strokeLinecap="round"
-              style={{ originX: '100px', originY: '130px' }}
-              animate={{ rotate: 360 }}
-              transition={{ duration: 6, repeat: Infinity, ease: 'linear' }}
-            />
-            {/* Second Hand Accent */}
-            <motion.line
-              x1="100"
-              y1="138"
-              x2="100"
-              y2="92"
-              stroke={accentColor}
-              strokeWidth="1.5"
-              strokeLinecap="round"
-              style={{ originX: '100px', originY: '130px' }}
-              animate={{ rotate: 360 }}
-              transition={{ duration: 3, repeat: Infinity, ease: 'linear' }}
-            />
-          </>
-        ) : (
-          <>
-            <line x1="100" y1="130" x2="116" y2="116" stroke="#FFFFFF" strokeWidth="4" strokeLinecap="round" />
-            <line x1="100" y1="130" x2="100" y2="94" stroke="#FFFFFF" strokeWidth="2.5" strokeLinecap="round" />
-            <line x1="100" y1="136" x2="100" y2="92" stroke={accentColor} strokeWidth="1.5" strokeLinecap="round" />
-          </>
-        )}
+          {animateHands ? (
+            <>
+              {/* Hour Hand: Rotates around (0,0) */}
+              <motion.g
+                animate={{ rotate: 360 }}
+                transition={{ duration: 24, repeat: Infinity, ease: 'linear' }}
+              >
+                <line
+                  x1="0"
+                  y1="3"
+                  x2="0"
+                  y2="-26"
+                  stroke="#FFFFFF"
+                  strokeWidth="4"
+                  strokeLinecap="round"
+                />
+              </motion.g>
 
-        {/* CENTER PIN CAP */}
-        <circle cx="100" cy="130" r="2.5" fill={accentColor} />
+              {/* Minute Hand: Rotates around (0,0) */}
+              <motion.g
+                animate={{ rotate: 360 }}
+                transition={{ duration: 6, repeat: Infinity, ease: 'linear' }}
+              >
+                <line
+                  x1="0"
+                  y1="4"
+                  x2="0"
+                  y2="-38"
+                  stroke="#FFFFFF"
+                  strokeWidth="2.5"
+                  strokeLinecap="round"
+                />
+              </motion.g>
+
+              {/* Second Hand Accent: Rotates around (0,0) */}
+              <motion.g
+                animate={{ rotate: 360 }}
+                transition={{ duration: 2, repeat: Infinity, ease: 'linear' }}
+              >
+                <line
+                  x1="0"
+                  y1="8"
+                  x2="0"
+                  y2="-42"
+                  stroke={accentColor}
+                  strokeWidth="1.5"
+                  strokeLinecap="round"
+                />
+              </motion.g>
+            </>
+          ) : (
+            <>
+              <line x1="0" y1="0" x2="16" y2="-14" stroke="#FFFFFF" strokeWidth="4" strokeLinecap="round" />
+              <line x1="0" y1="0" x2="0" y2="-36" stroke="#FFFFFF" strokeWidth="2.5" strokeLinecap="round" />
+              <line x1="0" y1="6" x2="0" y2="-40" stroke={accentColor} strokeWidth="1.5" strokeLinecap="round" />
+            </>
+          )}
+
+          {/* Center Pin Cap */}
+          <circle cx="0" cy="0" r="2.5" fill={accentColor} />
+          <circle cx="0" cy="0" r="1.2" fill="#000000" />
+        </g>
       </svg>
     </div>
   );

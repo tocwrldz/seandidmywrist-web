@@ -2,85 +2,6 @@ import React, { useState } from 'react';
 import { GShockWatch } from '../../components/GShockWatch';
 import { Camera, CheckCircle, Clock, ShieldCheck, Upload } from 'lucide-react';
 
-interface GalleryItem {
-  id: string;
-  name: string;
-  build: string;
-  colorway: {
-    bezel: string;
-    dial: string;
-    indices: string;
-    accent: string;
-    strap: string;
-  };
-  completionDate: string;
-  caption: string;
-  buyerCity: string;
-}
-
-const SOLD_ARCHIVES: GalleryItem[] = [
-  {
-    id: 'arch-1',
-    name: 'The Chi-Town Neon Night',
-    build: 'Custom GA2100 CasiOak',
-    colorway: {
-      bezel: '#121212',
-      dial: '#0a0a0a',
-      indices: 'rainbow',
-      accent: '#38bdf8',
-      strap: '#18181b'
-    },
-    completionDate: 'October 2024',
-    caption: '“Sean murdered this build! The rainbow markers pop like crazy under the Chicago streetlights.”',
-    buyerCity: 'Wicker Park, Chicago'
-  },
-  {
-    id: 'arch-2',
-    name: 'Stealth Royal AP Conversion',
-    build: 'Steel AP Band GA2100',
-    colorway: {
-      bezel: '#27272a',
-      dial: '#18181b',
-      indices: '#71717a',
-      accent: '#ffffff',
-      strap: '#27272a'
-    },
-    completionDate: 'September 2024',
-    caption: '“The weight of the steel AP mod is unbelievable. Hands down the sickest watch in my collection.”',
-    buyerCity: 'Munster, IN'
-  },
-  {
-    id: 'arch-3',
-    name: 'Art Board Skeleton Frost',
-    build: 'Jelly Clear Strap GA2100',
-    colorway: {
-      bezel: 'rgba(255,255,255,0.7)',
-      dial: '#ffffff',
-      indices: 'rainbow',
-      accent: '#22c55e',
-      strap: 'rgba(255,255,255,0.5)'
-    },
-    completionDate: 'August 2024',
-    caption: '“Met Sean in Millennium Park. Took time to size the strap and make sure the fit was flawless.”',
-    buyerCity: 'Downtown Chicago'
-  },
-  {
-    id: 'arch-4',
-    name: 'Blood Shot Crimson Lab Special',
-    build: 'Monochrome Red GA2100',
-    colorway: {
-      bezel: '#991b1b',
-      dial: '#7f1d1d',
-      indices: '#ef4444',
-      accent: '#fca5a5',
-      strap: '#991b1b'
-    },
-    completionDate: 'July 2024',
-    caption: '“Head-turner everywhere I go. 100% authentic Casio movement with Sean’s custom touch.”',
-    buyerCity: 'Valparaiso, IN'
-  }
-];
-
 export const SoldGallery: React.FC = () => {
   const [orderRef, setOrderRef] = useState('');
   const [caption, setCaption] = useState('');
@@ -114,56 +35,27 @@ export const SoldGallery: React.FC = () => {
           <span className="bg-red-600 text-white comic-font text-xs md:text-sm px-2 py-0.5 border border-white">
             ARCHIVE VAULT
           </span>
-          <span className="text-xs font-bold text-gray-300">CUSTOM CASIOAK BUILDS</span>
+          <span className="text-xs font-bold text-gray-300">CUSTOM 1-OF-1 ARCHIVES</span>
         </div>
         <h2 className="comic-font text-4xl md:text-6xl text-white tracking-wide">
           THE SOLD GALLERY
         </h2>
         <p className="text-sm font-bold text-gray-300 max-w-2xl mt-1">
-          Every custom watch from the SeanDidMyWrist lab is an individual art piece. Here are documented past commissions and verified customer wrist checks.
+          Every custom watch from the SeanDidMyWrist lab is an individual build. Verified customer wrist checks and past commissions are archived here upon administrator approval.
         </p>
       </div>
 
-      {/* Grid of Sold Watches */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {SOLD_ARCHIVES.map((item) => (
-          <div key={item.id} className="ink-panel bg-white p-4 flex flex-col justify-between relative group">
-            {/* Sold Stamp Ribbon */}
-            <div className="absolute top-3 right-3 z-20 bg-red-600 text-white comic-font text-lg px-4 py-1 border-3 border-black shadow-[3px_3px_0px_#000] rotate-12">
-              SOLD
-            </div>
-
-            {/* Illustration Canvas */}
-            <div className="relative aspect-4/3 bg-gray-100 border-3 border-black mb-3 flex items-center justify-center overflow-hidden">
-              <div className="absolute inset-0 halftone opacity-10 pointer-events-none" />
-              <GShockWatch
-                size={180}
-                bezelColor={item.colorway.bezel}
-                dialColor={item.colorway.dial}
-                indicesColor={item.colorway.indices}
-                accentColor={item.colorway.accent}
-                strapColor={item.colorway.strap}
-                animateHands={false}
-              />
-            </div>
-
-            {/* Content */}
-            <div>
-              <div className="flex items-baseline justify-between mb-1">
-                <h3 className="comic-font text-2xl text-black">{item.name}</h3>
-                <span className="text-xs font-black bg-gray-200 px-2 py-0.5 border border-black">
-                  {item.completionDate}
-                </span>
-              </div>
-              <p className="text-xs font-bold text-gray-500 uppercase mb-2">
-                {item.build} • Verified Local Delivery ({item.buyerCity})
-              </p>
-              <div className="bg-yellow-50 border-2 border-black p-3 text-xs italic font-medium text-gray-800">
-                {item.caption}
-              </div>
-            </div>
-          </div>
-        ))}
+      {/* Honest, Clean Vault Notice */}
+      <div className="ink-panel bg-white p-8 text-center space-y-3">
+        <div className="w-16 h-16 bg-yellow-300 border-4 border-black rounded-full flex items-center justify-center mx-auto shadow-[4px_4px_0px_#000]">
+          <Clock size={32} className="text-black" />
+        </div>
+        <h3 className="comic-font text-3xl md:text-4xl text-black">
+          THE VAULT IS OPEN & READY
+        </h3>
+        <p className="text-xs md:text-sm font-bold text-gray-600 max-w-lg mx-auto">
+          Completed custom 1-of-1 commissions and customer-submitted wrist photos will appear here after verification. Have a build from Sean? Submit your wrist check below!
+        </p>
       </div>
 
       {/* CUSTOMER SUBMISSION FORM */}

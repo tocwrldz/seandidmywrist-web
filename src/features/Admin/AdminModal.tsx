@@ -22,47 +22,11 @@ export const AdminModal: React.FC<AdminModalProps> = ({
   const [passcode, setPasscode] = useState('');
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
-  // Mock pending gallery submissions for admin moderation
-  const [pendingSubmissions, setPendingSubmissions] = useState([
-    {
-      id: 'sub-1',
-      orderRef: 'SDMW-942810',
-      client: 'Derrick M. (Chicago, IL)',
-      watchName: 'Rainbow on Black GA2100',
-      caption: 'Straight fire on wrist. Shipped in 2 days.',
-      status: 'pending'
-    },
-    {
-      id: 'sub-2',
-      orderRef: 'SDMW-302199',
-      client: 'Alicia B. (Munster, IN)',
-      watchName: 'Steel AP Band Black Out',
-      caption: 'Met Sean at Centennial Park. Masterpiece.',
-      status: 'pending'
-    }
-  ]);
+  // Gallery submissions for admin moderation (populated by live customer uploads)
+  const [pendingSubmissions, setPendingSubmissions] = useState<any[]>([]);
 
-  // Mock sample orders for Dispatch Desk
-  const [mockOrders, setMockOrders] = useState([
-    {
-      id: 'SDMW-81204',
-      customer: 'Marcus Vance',
-      items: 'Rainbow on White GA2100',
-      method: 'USPS Priority Insured ($10)',
-      address: '1420 N Michigan Ave, Chicago, IL',
-      tracking: '94001118995628391024',
-      status: 'Shipped'
-    },
-    {
-      id: 'SDMW-99124',
-      customer: 'Trey Jenkins',
-      items: 'Steel AP Band GA2100 (Black Out)',
-      method: 'Public Meet-Up',
-      address: 'Wicker Park Square (Damen Ave)',
-      tracking: 'MEETUP-SCHEDULED',
-      status: 'Ready for Handover'
-    }
-  ]);
+  // Orders for Dispatch Desk (populated by live checkouts)
+  const [mockOrders, setMockOrders] = useState<any[]>([]);
 
   const [newTracking, setNewTracking] = useState('');
 
