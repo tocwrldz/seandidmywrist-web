@@ -2,6 +2,7 @@ import React from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { X, Award, Sparkles, Check, Gift, RefreshCw, Zap, User } from 'lucide-react';
 import { UserProfile } from '../hooks/useAuth';
+import { GhostMascot } from './GhostMascot';
 
 interface LoyaltyPunchCardProps {
   isOpen: boolean;
@@ -85,20 +86,21 @@ export const LoyaltyPunchCard: React.FC<LoyaltyPunchCardProps> = ({
           </div>
 
           {/* Header */}
-          <div className="text-center border-b-4 border-black pb-3 mb-4 relative z-10">
+          <div className="text-center border-b-4 border-black pb-3 mb-4 relative z-10 flex flex-col items-center">
+            {/* Ghost Logo */}
+            <div className="mb-1 flex items-center justify-center">
+              <GhostMascot size={80} interactive={false} showLabel={false} />
+            </div>
             <div className="inline-flex items-center gap-1.5 bg-black text-yellow-300 comic-font text-xs md:text-sm px-3 py-1 border-2 border-black -rotate-1 mb-1.5">
               <Sparkles size={14} className="animate-pulse" />
               <span>OFFICIAL VIP REWARDS CLUB</span>
             </div>
             <h2 className="comic-font text-3xl md:text-5xl text-black tracking-wide leading-none">
-              SEAN’S PUNCH CARD
+              VIP PUNCH CARD
             </h2>
             <p className="text-xs md:text-sm font-black text-black mt-1">
               EVERY WATCH PURCHASE = 1 HOLE PUNCH • 5 PUNCHES = 1 FREE WATCH!
             </p>
-            <div className="inline-block bg-white text-black text-[10px] font-bold px-2 py-0.5 border border-black mt-1">
-              ✨ Featuring The Ghost of SeanDidMyWrist Magic Poof & Punch Animation!
-            </div>
           </div>
 
           {/* Reward Status Banner */}

@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useRef, useEffect } from 'react';
+import gsap from 'gsap';
 import { motion } from 'motion/react';
 import { Product } from '../../data/products';
 import { GShockWatch } from '../../components/GShockWatch';
@@ -17,15 +18,109 @@ export const ProductCard: React.FC<ProductCardProps> = ({
   onViewDetails,
   onReserveDeposit
 }) => {
+  const cardRef = useRef<HTMLDivElement>(null);
+  const priceTagRef = useRef<HTMLDivElement>(null);
+  const badgeRef = useRef<HTMLDivElement>(null);
+
   const isAvailable = product.status === 'available';
   const isComingSoon = product.status === 'coming-soon';
   const isReserved = product.status === 'reserved';
   const isSold = product.status === 'sold';
 
+  useEffect(() => {
+    const card = cardRef.current;
+    if (!card) return;
+
+    // Use GSAP context for proper cleanup in React
+    const ctx = gsap.context(() => {
+      gsap.set(card, {
+        y: 0,
+        scale: 1,
+        boxShadow: '6px 6px 0px 0px #000000',
+        transformOrigin: 'center center',
+      });
+    }, cardRef);
+
+    const handleMouseEnter = () => {
+      gsap.killTweensOf(card);
+      gsap.to(card, {
+        y: -7,
+        scale: 1.025,
+        boxShadow: '12px 12px 0px 0px #000000',
+        duration: 0.35,
+        ease: 'back.out(2)', // Snappy comic-book pop
+      });
+
+      if (priceTagRef.current) {
+        gsap.killTweensOf(priceTagRef.current);
+        gsap.to(priceTagRef.current, {
+          scale: 1.08,
+          rotate: -2,
+          duration: 0.3,
+          ease: 'back.out(2.5)',
+        });
+      }
+
+      if (badgeRef.current) {
+        gsap.killTweensOf(badgeRef.current);
+        gsap.to(badgeRef.current, {
+          scale: 1.05,
+          y: -2,
+          duration: 0.3,
+          ease: 'back.out(2)',
+        });
+      }
+    };
+
+    const handleMouseLeave = () => {
+      gsap.killTweensOf(card);
+      gsap.to(card, {
+        y: 0,
+        scale: 1,
+        boxShadow: '6px 6px 0px 0px #000000',
+        duration: 0.28,
+        ease: 'power2.out',
+      });
+
+      if (priceTagRef.current) {
+        gsap.killTweensOf(priceTagRef.current);
+        gsap.to(priceTagRef.current, {
+          scale: 1,
+          rotate: 0,
+          duration: 0.25,
+          ease: 'power2.out',
+        });
+      }
+
+      if (badgeRef.current) {
+        gsap.killTweensOf(badgeRef.current);
+        gsap.to(badgeRef.current, {
+          scale: 1,
+          y: 0,
+          duration: 0.25,
+          ease: 'power2.out',
+        });
+      }
+    };
+
+    card.addEventListener('mouseenter', handleMouseEnter);
+    card.addEventListener('mouseleave', handleMouseLeave);
+
+    return () => {
+      card.removeEventListener('mouseenter', handleMouseEnter);
+      card.removeEventListener('mouseleave', handleMouseLeave);
+      ctx.revert();
+    };
+  }, []);
+
   return (
-    <div className="ink-panel bg-white p-4 flex flex-col justify-between relative group hover:shadow-[10px_10px_0px_#000000] transition-all">
+    <div
+      ref={cardRef}
+      style={{ willChange: 'transform, box-shadow', transition: 'none' }}
+      className="ink-panel bg-white p-4 flex flex-col justify-between relative group cursor-default"
+    >
       {/* Status Badges */}
-      <div className="absolute top-2 left-2 z-20 flex flex-col gap-1 pointer-events-none">
+      <div ref={badgeRef} className="absolute top-2 left-2 z-20 flex flex-col gap-1 pointer-events-none">
         {isComingSoon && (
           <div className="bg-red-600 text-white comic-font text-sm md:text-base px-2.5 py-0.5 border-2 border-black shadow-[3px_3px_0px_#000] rotate-[-2deg]">
             COMING SOON‼️
@@ -96,7 +191,11 @@ export const ProductCard: React.FC<ProductCardProps> = ({
           >
             {product.name}
           </h3>
-          <div className="comic-font text-2xl text-black shrink-0 bg-yellow-300 border-2 border-black px-2 py-0.5 shadow-[2px_2px_0px_#000]">
+          <div
+            ref={priceTagRef}
+            style={{ willChange: 'transform' }}
+            className="comic-font text-2xl text-black shrink-0 bg-yellow-300 border-2 border-black px-2 py-0.5 shadow-[2px_2px_0px_#000]"
+          >
             {product.price > 0 ? `$${product.price}` : 'TBA'}
           </div>
         </div>

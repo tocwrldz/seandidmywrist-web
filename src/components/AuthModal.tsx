@@ -246,11 +246,11 @@ export const AuthModal: React.FC<AuthModalProps> = ({
             </div>
             <div className="flex items-center gap-1.5">
               <Check size={14} className="text-black font-black" />
-              <span>Magic Ghost of SeanDidMyWrist poof & punching animation</span>
+              <span>Interactive magic poof & punching animation</span>
             </div>
             <div className="flex items-center gap-1.5">
               <Check size={14} className="text-black font-black" />
-              <span>10 punches = 1 FREE Custom GA2100 CasiOak</span>
+              <span>5 punches = 1 FREE Custom GA2100 CasiOak</span>
             </div>
           </div>
         </motion.div>

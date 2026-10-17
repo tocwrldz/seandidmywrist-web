@@ -163,12 +163,12 @@ export const AccountProfileModal: React.FC<AccountProfileModalProps> = ({
             {/* Test Simulation Buttons */}
             <div className="border-t border-black/30 pt-2.5 mt-2 flex flex-wrap gap-2 text-xs">
               <span className="font-bold text-gray-600 text-[11px] w-full">
-                Interactive Testing: Simulate purchase to trigger Ghost of SeanDidMyWrist animation:
+                Interactive Testing: Simulate purchase to trigger magic punch card animation:
               </span>
               <button
                 onClick={() => onSimulateWatchPurchase(1)}
                 className="bg-black hover:bg-yellow-400 hover:text-black text-white px-2.5 py-1 text-xs font-bold border-2 border-black flex items-center gap-1 cursor-pointer transition-colors"
-                title="Test buying 1 watch: adds 1 hole punch with Ghost of Sean animation"
+                title="Test buying 1 watch: adds 1 hole punch with magic card animation"
               >
                 <Zap size={13} />
                 <span>+1 Watch Purchase</span>

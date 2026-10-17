@@ -137,7 +137,7 @@ export const GhostPunchCardModal: React.FC<GhostPunchCardModalProps> = ({
                     <Sparkles size={32} className="text-black animate-spin" />
                   </div>
                   <span className="bg-black text-yellow-300 comic-font text-sm sm:text-base px-3 py-1 mt-1 border-2 border-black rotate-2">
-                    ✨ THE GHOST OF SEANDIDMYWRIST HAS MATERIALIZED! ✨
+                    ✨ VIP LOYALTY CARD PUNCHED! ✨
                   </span>
                 </div>
               </div>
@@ -215,17 +215,13 @@ export const GhostPunchCardModal: React.FC<GhostPunchCardModalProps> = ({
                     <circle cx="25" cy="107" r="4" fill="#fbbf24" stroke="#000" strokeWidth="1" />
                   </svg>
                 </div>
-
-                <div className="absolute -bottom-2 -left-1 bg-black text-cyan-300 comic-font text-[9px] px-1.5 py-0.5 border border-cyan-300">
-                  SEAN’S GHOST
-                </div>
               </motion.div>
 
               {/* Speech Bubble from The Ghost */}
               <div className="flex-1 text-center sm:text-left">
-                <div className="inline-flex items-center gap-1 bg-black text-yellow-300 comic-font text-xs px-2.5 py-0.5 border border-black mb-1">
-                  <Zap size={13} className="text-yellow-300 animate-bounce" />
-                  <span>THE GHOST OF SEANDIDMYWRIST</span>
+                <div className="inline-flex items-center gap-1.5 bg-black text-yellow-300 comic-font text-xs px-2.5 py-1 border border-black mb-1">
+                  <span className="w-2.5 h-2.5 rounded-full bg-cyan-400 animate-ping inline-block" />
+                  <span>VIP PUNCH CARD</span>
                 </div>
                 <h3 className="comic-font text-xl sm:text-2xl text-black leading-tight">
                   {stage === 'poof' && '“BOO! I HEARD A WATCH WAS BOUGHT!”'}

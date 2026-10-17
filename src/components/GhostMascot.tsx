@@ -6,13 +6,15 @@ interface MascotProps {
   size?: number;
   className?: string;
   speechText?: string;
+  showLabel?: boolean;
 }
 
 export const GhostMascot: React.FC<MascotProps> = ({
   interactive = false,
   size = 140,
   className = '',
-  speechText = 'SEAN DID IT! CUSTOMIZED 4U!'
+  speechText = 'SEAN DID IT! CUSTOMIZED 4U!',
+  showLabel = true
 }) => {
   const [isWinking, setIsWinking] = useState(false);
   const [showSpeech, setShowSpeech] = useState(false);
@@ -81,9 +83,11 @@ export const GhostMascot: React.FC<MascotProps> = ({
             <line x1="25" y1="107" x2="28" y2="107" stroke="#000000" strokeWidth="1.5" strokeLinecap="round" />
           </svg>
         </div>
-        <div className="comic-font text-xs tracking-wider bg-black text-white px-2 py-0.5 mt-[-6px] border border-black shadow-[2px_2px_0px_#000]">
-          SEAN DID IT.
-        </div>
+        {showLabel && (
+          <div className="comic-font text-xs tracking-wider bg-black text-white px-2 py-0.5 mt-[-6px] border border-black shadow-[2px_2px_0px_#000]">
+            SEAN DID IT.
+          </div>
+        )}
       </div>
     );
   }
@@ -234,12 +238,14 @@ export const GhostMascot: React.FC<MascotProps> = ({
       </motion.div>
 
       {/* Comic brand label badge */}
-      <motion.div
-        whileHover={{ scale: 1.05 }}
-        className="comic-font text-xs tracking-wider bg-black text-white px-2 py-0.5 mt-[-6px] border-2 border-black shadow-[3px_3px_0px_#000000]"
-      >
-        SEAN DID IT.
-      </motion.div>
+      {showLabel && (
+        <motion.div
+          whileHover={{ scale: 1.05 }}
+          className="comic-font text-xs tracking-wider bg-black text-white px-2 py-0.5 mt-[-6px] border-2 border-black shadow-[3px_3px_0px_#000000]"
+        >
+          SEAN DID IT.
+        </motion.div>
+      )}
     </div>
   );
 };
