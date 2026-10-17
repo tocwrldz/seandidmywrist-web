@@ -35,7 +35,7 @@ export const SoldGallery: React.FC = () => {
           <span className="bg-red-600 text-white comic-font text-xs md:text-sm px-2 py-0.5 border border-white">
             ARCHIVE VAULT
           </span>
-          <span className="text-xs font-bold text-gray-300">CUSTOM 1-OF-1 ARCHIVES</span>
+          <span className="text-xs font-bold text-gray-300">CUSTOM BUILDS ARCHIVE</span>
         </div>
         <h2 className="comic-font text-4xl md:text-6xl text-white tracking-wide">
           THE SOLD GALLERY
@@ -54,7 +54,7 @@ export const SoldGallery: React.FC = () => {
           THE VAULT IS OPEN & READY
         </h3>
         <p className="text-xs md:text-sm font-bold text-gray-600 max-w-lg mx-auto">
-          Completed custom 1-of-1 commissions and customer-submitted wrist photos will appear here after verification. Have a build from Sean? Submit your wrist check below!
+          Completed custom watch commissions and customer-submitted wrist photos will appear here after verification. Have a build from Sean? Submit your wrist check below!
         </p>
       </div>
 

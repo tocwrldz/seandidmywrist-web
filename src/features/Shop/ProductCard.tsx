@@ -42,8 +42,8 @@ export const ProductCard: React.FC<ProductCardProps> = ({
           </div>
         )}
         {isAvailable && product.collection === 'Custom Collection' && (
-          <div className="bg-yellow-300 text-black comic-font text-xs px-2 py-0.5 border-2 border-black shadow-[2px_2px_0px_#000]">
-            CUSTOM HAND-BUILT
+          <div className="bg-red-600 text-white comic-font text-xs md:text-sm px-2.5 py-0.5 border-2 border-black shadow-[2px_2px_0px_#000] rotate-[-2deg]">
+            HANDBUILT WATCH
           </div>
         )}
       </div>
